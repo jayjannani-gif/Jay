@@ -1,0 +1,107 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Poppins", ui-sans-serif, system-ui, sans-serif;
+  --font-heading: "Poppins", sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* Premium AI Studio palette */
+  --color-ai-bg: #0E0F13;
+  --color-ai-surface: #15161C;
+  --color-ai-raised: #1D1F27;
+  --color-ai-border: #2A2C36;
+  --color-ai-text: #F3F4F6;
+  --color-ai-muted: #9A9CA8;
+
+  --color-ai-accent-blue: #4285F4;
+  --color-ai-accent-purple: #9168C0;
+  --color-ai-accent-rose: #EE6C8B;
+  
+  --color-ai-amber: #FFB020;
+  --color-ai-green: #34C77B;
+}
+
+@layer base {
+  body {
+    font-family: var(--font-sans);
+    font-weight: 400; /* Descriptions/body normal */
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    font-weight: 700; /* Main words bold */
+  }
+
+  /* Force headers, bold texts, and core labels to be beautifully bold */
+  strong, b, .font-bold {
+    font-weight: 700 !important;
+  }
+
+  .font-semibold {
+    font-weight: 600 !important;
+  }
+
+  /* Enforce descriptions and normal text blocks to be regular weight */
+  p, .description, .desc, .text-zinc-500, .text-zinc-600, .text-ai-muted {
+    font-weight: 400 !important;
+  }
+
+  /* Custom glassmorphism for header */
+  .glass-header {
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+  }
+
+  /* Custom Webkit scrollbar for premium feel */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+  ::-webkit-scrollbar-thumb {
+    background: #2A2C36;
+    border-radius: 4px;
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: #3B82F6;
+  }
+}
+
+/* Gemini animated gradient glow */
+.gemini-glow {
+  background: radial-gradient(circle at center, rgba(145, 104, 192, 0.15) 0%, rgba(66, 133, 244, 0.05) 50%, transparent 100%);
+}
+
+.gemini-gradient-text {
+  background: linear-gradient(100deg, #4285F4, #9168C0, #EE6C8B);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gemini-gradient-bg {
+  background: linear-gradient(100deg, #4285F4, #9168C0, #EE6C8B);
+}
+
+.gemini-gradient-border {
+  border-image: linear-gradient(100deg, #4285F4, #9168C0, #EE6C8B) 1;
+}
+
+/* Spark glow anim */
+@keyframes pulseGlow {
+  0%, 100% {
+    transform: scale(1) translate(-50%, -50%);
+    opacity: 0.6;
+  }
+  50% {
+    transform: scale(1.15) translate(-45%, -45%);
+    opacity: 0.85;
+  }
+}
+
+.spark-glow {
+  filter: blur(80px);
+  animation: pulseGlow 10s ease-in-out infinite;
+}
