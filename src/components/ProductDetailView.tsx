@@ -124,6 +124,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                   alt={product.name}
                   className="absolute inset-0 w-full h-full object-cover select-none"
                   referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    (e.currentTarget as HTMLImageElement).style.display = "none";
+                  }}
                 />
               ) : (
                 <span className="text-8xl sm:text-9xl filter drop-shadow-2xl select-none animate-bounce-slow">
@@ -157,6 +160,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                           alt={`${product.name} swatch`}
                           className="w-full h-full object-cover select-none opacity-80"
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
                         />
                         <div className="absolute inset-0 bg-black/10 mix-blend-multiply pointer-events-none" />
                       </div>
@@ -516,6 +522,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                         alt={p.name}
                         className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          (e.currentTarget as HTMLImageElement).style.display = "none";
+                        }}
                       />
                     ) : (
                       <span className="text-4xl filter drop-shadow-sm group-hover:scale-105 transition-transform">

@@ -152,6 +152,9 @@ export const CartView: React.FC<CartViewProps> = ({
                           alt={item.product.name}
                           className="absolute inset-0 w-full h-full object-cover select-none"
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
                         />
                       ) : (
                         <span className="text-3.5xl filter drop-shadow-sm select-none">

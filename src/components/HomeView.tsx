@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { Sparkles, ArrowRight, Star, Heart, ShoppingCart, Check, Percent, ChevronLeft, ChevronRight, Copy, Gift, Layers, Flame, Zap, Clock } from "lucide-react";
 import { Product } from "../types";
 import { PRODUCTS } from "../data";
+import { IMAGES } from "../assets/images";
 import { trackViewItemList, trackSelectItem, trackSelectPromotion } from "../utils/analytics";
 import { motion, AnimatePresence } from "motion/react";
 
@@ -47,7 +48,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       badge: "Sustainable Edition",
       price: "$68.00",
       originalPrice: "$88.00",
-      image: "/assets/images/sustainable_bundle_poster_1784181177171.jpg",
+      image: IMAGES.sustainableBundlePoster,
       buttonColor: "bg-emerald-600 hover:bg-emerald-500 border-emerald-600 focus:ring-emerald-500/50",
       actionText: "Claim Sustainable Combo",
       onClick: () => {
@@ -67,7 +68,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       badge: "Flash Deal Bundle",
       price: "$98.00",
       originalPrice: "$124.00",
-      image: "/assets/images/discount_bundle_poster_1784181190493.jpg",
+      image: IMAGES.discountBundlePoster,
       buttonColor: "bg-red-600 hover:bg-red-500 border-red-600 focus:ring-red-500/50",
       actionText: "Apply SHOPWEEK15 & Buy Bundle",
       onClick: () => {
@@ -572,6 +573,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                           alt={product.name}
                           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
                         />
                       ) : (
                         <span className="text-6xl filter drop-shadow-md group-hover:scale-110 transition-transform duration-300">
@@ -1092,6 +1096,9 @@ export const HomeView: React.FC<HomeViewProps> = ({
                           alt={product.name}
                           className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            (e.currentTarget as HTMLImageElement).style.display = "none";
+                          }}
                         />
                       ) : (
                         <span className="text-4xl filter drop-shadow-sm group-hover:scale-105 transition-transform duration-300">

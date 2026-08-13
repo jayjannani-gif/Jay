@@ -1,4 +1,5 @@
 import { Product, Review } from "./types";
+import { IMAGES } from "./assets/images";
 
 // Generates realistic mock reviews for products
 const generateReviewsForProduct = (productId: string, productName: string): Review[] => {
@@ -39,7 +40,7 @@ export const PRODUCTS: Product[] = [
     rank: 1,
     gradient: "linear-gradient(135deg, #F9FAFB 0%, #D1D5DB 100%)",
     icon: "🖋️",
-    image: "/assets/images/google_pen_white_1784175570902.jpg",
+    image: IMAGES.googlePenWhite,
     description: "An ultra-premium white-bodied writing instrument featuring a soft-touch matte finish and the classic subtle Google logo. Designed for smooth flow, reliability, and precision brainstorming.",
     details: [
       "0.5mm fine tip Japanese gel ink (black)",
@@ -66,7 +67,7 @@ export const PRODUCTS: Product[] = [
     rank: 2,
     gradient: "linear-gradient(100deg, #4285F4 0%, #9168C0 50%, #EE6C8B 100%)",
     icon: "✨",
-    image: "/assets/images/gemini_sticker_1784175582884.jpg",
+    image: IMAGES.geminiSticker,
     description: "Add a spark of intelligence to your workspace. This metallic hologram sticker shifts colors dynamically in the light, showcasing the Gemini signature design. Highly adhesive, scratch-resistant, and weatherproof.",
     details: [
       "Holographic rainbow-sheen vinyl",
@@ -90,7 +91,7 @@ export const PRODUCTS: Product[] = [
     rank: 3,
     gradient: "linear-gradient(135deg, #EA4335 0%, #B31412 100%)",
     icon: "👕",
-    image: "/assets/images/google_red_tee_1784175593072.jpg",
+    image: IMAGES.googleRedTee,
     description: "The ultimate casual comfort. Crafted in a rich Google-signature red, this t-shirt is designed with a premium, relaxed tailored fit, featuring a subtle Google chest graphic in vintage white wash.",
     details: [
       "100% certified organic ring-spun cotton",
@@ -117,7 +118,7 @@ export const PRODUCTS: Product[] = [
     badge: "New",
     gradient: "linear-gradient(135deg, #00C6FF 0%, #0072FF 100%)",
     icon: "💧",
-    image: "/assets/images/gemini_water_bottle_1784175603244.jpg",
+    image: IMAGES.geminiWaterBottle,
     description: "Stay hydrated during intense coding sprints. This matte obsidian-finish vacuum flask features a laser-etched Gemini constellation that shifts brilliantly. Keeps drinks icy cold for 24 hours or steaming hot for 12.",
     details: [
       "Double-walled 18/8 professional-grade stainless steel",
@@ -142,7 +143,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 167,
     gradient: "linear-gradient(135deg, #3DDC84 0%, #1D7C43 100%)",
     icon: "🤖",
-    image: "/assets/images/android_enamel_pin_1784175614374.jpg",
+    image: IMAGES.androidEnamelPin,
     description: "Pin your love for open source. Featuring the newly redesigned 3D Android bot emblem in hard enamel, polished with premium silver-toned metal trim. A statement piece for bags, jackets, or lanyards.",
     details: [
       "Premium hard enamel with high-gloss topcoat",
@@ -164,7 +165,7 @@ export const PRODUCTS: Product[] = [
     badge: "New",
     gradient: "linear-gradient(135deg, #9CA3AF 0%, #4B5563 100%)",
     icon: "🦖",
-    image: "/assets/images/chrome_dino_plush_1784175626461.jpg",
+    image: IMAGES.chromeDinoPlush,
     description: "Your offline companion is here to keep you company when the internet goes out. This soft, pixelated dinosaur plush features tactile pixel-edge details and a weighted base to sit securely next to your screen.",
     details: [
       "Authentic pixel-art embroidery details",
@@ -185,7 +186,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 304,
     gradient: "linear-gradient(135deg, #3B82F6 0%, #1D4ED8 100%)",
     icon: "🧥",
-    image: "/assets/images/google_campus_hoodie_1784175638152.jpg",
+    image: IMAGES.googleCampusHoodie,
     description: "A tribute to the vibrant spirit of Google's global campuses. Crafted from super-heavyweight premium brushed fleece, this hoodie boasts an incredibly comfortable inner lining, a spacious kangaroo pouch, and an adjustable lined hood.",
     details: [
       "Ultra-thick 360 GSM heavy cotton fleece blend",
@@ -213,7 +214,7 @@ export const PRODUCTS: Product[] = [
     badge: "On Sale",
     gradient: "linear-gradient(135deg, #60A5FA 0%, #2563EB 100%)",
     icon: "🎒",
-    image: "/assets/images/cloud_backpack_1784175649775.jpg",
+    image: IMAGES.cloudBackpack,
     description: "Travel lighter with your ideas. The Cloud Backpack features a minimal exterior, custom rain-proof zippers, and an advanced ergonomic mesh suspension system. Includes dedicated quick-access tech sleeves for laptops and chargers.",
     details: [
       "Fully padded laptop pocket (fits up to 16\" devices)",
@@ -234,7 +235,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 57,
     gradient: "linear-gradient(135deg, #FBBF24 0%, #D97706 100%)",
     icon: "🎓",
-    image: "/assets/images/noogler_beanie_1784175662642.jpg",
+    image: IMAGES.nooglerBeanie,
     description: "Celebrate the starting spirit of learning. This snug, colorful cuffed beanie pays homage to the legendary Noogler propellor caps, styled in a mature knit pattern with vibrant Google primaries blended beautifully.",
     details: [
       "High-loft acrylic knit fabric delivers rich thermal retention",
@@ -259,7 +260,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 78,
     gradient: "linear-gradient(135deg, #1E40AF 0%, #1E3A8A 100%)",
     icon: "☕",
-    image: "/assets/images/pixel_blue_mug_1784175674776.jpg",
+    image: IMAGES.pixelBlueMug,
     description: "Designed with the iconic Pixel blue tone, this heavy ceramic mug features a speckled textured glaze that feels artisan-crafted. Boasts a massive comfortable grip handle made for coffee-fueled debugging hours.",
     details: [
       "Generous 15oz (450ml) liquid capacity",
@@ -281,7 +282,7 @@ export const PRODUCTS: Product[] = [
     badge: "New",
     gradient: "linear-gradient(135deg, #1F2937 0%, #111827 100%)",
     icon: "💻",
-    image: "/assets/images/laptop_sleeve_1784175684721.jpg",
+    image: IMAGES.laptopSleeve,
     description: "Protect your hardware with the official AI Studio developer gear. Featuring high-density shock-absorbing neoprene lined with a soft scratch-free interior and detailed with the signature Gemini gradient glowing zipper tract.",
     details: [
       "Custom molded 3D impact-diffusing air pads",
@@ -302,7 +303,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 45,
     gradient: "linear-gradient(135deg, #10B981 0%, #047857 100%)",
     icon: "👜",
-    image: "/assets/images/google_eco_tote_1784175696476.jpg",
+    image: IMAGES.googleEcoTote,
     description: "Ditch the plastic. This heavy-duty cotton canvas tote is built with cross-stitched handles that hold up to 30 lbs of groceries, books, or tech gear. Minimalist line-art Google Earth graphics on the front.",
     details: [
       "Sturdy 12oz biological cotton duck canvas",
@@ -323,7 +324,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 64,
     gradient: "linear-gradient(135deg, #8B5CF6 0%, #EC4899 100%)",
     icon: "📓",
-    image: "/assets/images/gemini_notebook_1784175706488.jpg",
+    image: IMAGES.geminiNotebook,
     description: "Your offline staging zone for prompt engineering, mathematical formulas, and interface designs. Features a rigid hard-backed cover displaying the Gemini solar flow with ultra-smooth heavy bleed-proof paper.",
     details: [
       "160 pages of premium 120 GSM dotted acid-free paper",
@@ -344,7 +345,7 @@ export const PRODUCTS: Product[] = [
     reviewCount: 89,
     gradient: "linear-gradient(135deg, #3B82F6 0%, #10B981 100%)",
     icon: "🧢",
-    image: "/assets/images/google_wordmark_cap_1784175716959.jpg",
+    image: IMAGES.googleWordmarkCap,
     description: "Keep cool in the sun or under intense studio lights. This structured 6-panel dad cap comes in deep obsidian black, showcasing a perfectly embroidered flat-stitched Google wordmark on the face and an adjustable brass sliding buckle.",
     details: [
       "100% washed premium cotton twill",

@@ -607,6 +607,9 @@ export const ShopView: React.FC<ShopViewProps> = ({
                               alt={product.name}
                               className="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                               referrerPolicy="no-referrer"
+                              onError={(e) => {
+                                (e.currentTarget as HTMLImageElement).style.display = "none";
+                              }}
                             />
                           ) : (
                             <span className="text-5xl filter drop-shadow-md group-hover:scale-110 transition-transform duration-300">
