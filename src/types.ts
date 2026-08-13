@@ -34,6 +34,35 @@ export interface CartItem {
   quantity: number;
   selectedSize?: string;
   selectedColor?: string;
+  customDesign?: {
+    itemType: string;
+    customText: string;
+    textColor: string;
+    fontStyle: string;
+    badgeIcon: string;
+    badgeName: string;
+    baseColorName: string;
+    baseColorHex: string;
+    previewSummary: string;
+  };
+}
+
+export interface LoyaltyProfile {
+  xp: number;
+  unlockedCodes: string[];
+  lastCheckInDate?: string;
+}
+
+export interface CustomDesignConfig {
+  itemType: "hoodie" | "tee" | "bottle" | "sleeve" | "mug" | "notebook";
+  customText: string;
+  textColor: string;
+  fontStyle: "mono" | "sans" | "serif" | "retro";
+  badgeId: string;
+  baseColorHex: string;
+  baseColorName: string;
+  selectedSize: string;
+  quantity: number;
 }
 
 export interface WishlistItem {

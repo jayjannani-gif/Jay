@@ -3,6 +3,7 @@ import { Search, SlidersHorizontal, Heart, ShoppingCart, Star, X, Check, Grid } 
 import { Product } from "../types";
 import { PRODUCTS } from "../data";
 import { trackViewItemList, trackSelectItem, trackSearch } from "../utils/analytics";
+import { motion, AnimatePresence } from "motion/react";
 
 interface ShopViewProps {
   onProductClick: (product: Product) => void;
@@ -91,7 +92,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
     // Sorting
     switch (sortBy) {
       case "bestselling":
-        // Sort by rank ascending (rank 1, 2, 3 first), and then by reviews count
         result.sort((a, b) => {
           if (a.rank && b.rank) return a.rank - b.rank;
           if (a.rank) return -1;
@@ -110,7 +110,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
         break;
       case "featured":
       default:
-        // Featured (stable order, mostly new at the top)
         result.sort((a, b) => {
           if (a.badge === "New" && b.badge !== "New") return -1;
           if (b.badge === "New" && a.badge !== "New") return 1;
@@ -122,7 +121,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
     return result;
   }, [searchQuery, selectedCategories, maxPrice, showOnlyOnSale, showOnlyNew, showOnlyWishlisted, minRating, sortBy, wishlistIds]);
 
-  // Fire GA4 View Item List on list load/change
   useEffect(() => {
     trackViewItemList(filteredProducts, "Catalog Filter Grid");
   }, [filteredProducts]);
@@ -325,7 +323,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
             </span>
           )}
 
-          {/* Clear button if any filter is active */}
           {(selectedCategories.length > 0 || maxPrice < 80 || showOnlyOnSale || showOnlyNew || showOnlyWishlisted || minRating > 0 || searchQuery !== "") && (
             <button
               onClick={clearAllFilters}
@@ -341,14 +338,13 @@ export const ShopView: React.FC<ShopViewProps> = ({
 
         <div className="flex gap-8" id="shop-workspace">
           
-          {/* SIDEBAR FILTERS - Desktop (Visible above md) */}
+          {/* SIDEBAR FILTERS - Desktop */}
           <aside
             className={`hidden md:block w-64 flex-shrink-0 p-6 rounded-2xl border ${
               isDark ? "bg-ai-surface border-ai-border text-ai-text" : "bg-white border-zinc-200 text-zinc-900"
             }`}
             id="desktop-filters-sidebar"
           >
-            {/* Filters Section Header */}
             <div className="flex items-center gap-2 pb-4 mb-6 border-b border-zinc-800/10 dark:border-zinc-100/10">
               <SlidersHorizontal className="h-4 w-4 text-purple-400" />
               <h3 className="font-heading font-bold text-sm uppercase tracking-wide">Filter Options</h3>
@@ -461,104 +457,114 @@ export const ShopView: React.FC<ShopViewProps> = ({
           </aside>
 
           {/* MOBILE SIDEBAR FILTER MODAL DRAWER */}
-          {sidebarOpen && (
-            <div className="fixed inset-0 z-50 md:hidden" id="mobile-filter-modal">
-              {/* Backdrop */}
-              <div onClick={() => setSidebarOpen(false)} className="absolute inset-0 bg-black/60 backdrop-blur-xs" />
-              
-              {/* Slider drawer */}
-              <div className={`absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] p-6 flex flex-col justify-between overflow-y-auto ${
-                isDark ? "bg-ai-surface text-ai-text" : "bg-white text-zinc-900"
-              }`} id="mobile-filter-drawer-body">
-                <div>
-                  <div className="flex items-center justify-between pb-4 border-b border-zinc-800/10 dark:border-zinc-100/10 mb-6">
-                    <h3 className="font-bold font-heading">Filter Catalog</h3>
-                    <button onClick={() => setSidebarOpen(false)} className="p-1 cursor-pointer">
-                      <X className="h-5 w-5" />
-                    </button>
-                  </div>
+          <AnimatePresence>
+            {sidebarOpen && (
+              <div className="fixed inset-0 z-50 md:hidden" id="mobile-filter-modal">
+                <motion.div
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  onClick={() => setSidebarOpen(false)}
+                  className="absolute inset-0 bg-black/60 backdrop-blur-xs"
+                />
+                
+                <motion.div
+                  initial={{ x: "-100%" }}
+                  animate={{ x: 0 }}
+                  exit={{ x: "-100%" }}
+                  transition={{ type: "spring", damping: 25, stiffness: 200 }}
+                  className={`absolute left-0 top-0 bottom-0 w-80 max-w-[85vw] p-6 flex flex-col justify-between overflow-y-auto ${
+                    isDark ? "bg-ai-surface text-ai-text" : "bg-white text-zinc-900"
+                  }`}
+                  id="mobile-filter-drawer-body"
+                >
+                  <div>
+                    <div className="flex items-center justify-between pb-4 border-b border-zinc-800/10 dark:border-zinc-100/10 mb-6">
+                      <h3 className="font-bold font-heading">Filter Catalog</h3>
+                      <button onClick={() => setSidebarOpen(false)} className="p-1 cursor-pointer">
+                        <X className="h-5 w-5" />
+                      </button>
+                    </div>
 
-                  {/* Categories */}
-                  <div className="mb-6">
-                    <h4 className="text-xs font-mono font-bold uppercase text-zinc-500 mb-3">Categories</h4>
-                    <div className="flex flex-col gap-2">
-                      {categories.map((cat) => (
-                        <label key={cat} className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
+                    <div className="mb-6">
+                      <h4 className="text-xs font-mono font-bold uppercase text-zinc-500 mb-3">Categories</h4>
+                      <div className="flex flex-col gap-2">
+                        {categories.map((cat) => (
+                          <label key={cat} className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
+                            <input
+                              type="checkbox"
+                              checked={selectedCategories.includes(cat)}
+                              onChange={() => toggleCategory(cat)}
+                              className="rounded border-zinc-700 bg-zinc-900 text-purple-500 focus:ring-purple-500 h-4 w-4 cursor-pointer"
+                            />
+                            <span>{cat}</span>
+                          </label>
+                        ))}
+                      </div>
+                    </div>
+
+                    <div className="mb-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <h4 className="text-xs font-mono font-bold uppercase text-zinc-500">Max Budget</h4>
+                        <span className="font-mono text-xs font-semibold text-blue-400">${maxPrice}</span>
+                      </div>
+                      <input
+                        type="range"
+                        min="4"
+                        max="80"
+                        step="2"
+                        value={maxPrice}
+                        onChange={(e) => setMaxPrice(Number(e.target.value))}
+                        className="w-full accent-blue-400"
+                      />
+                    </div>
+
+                    <div className="mb-6">
+                      <h4 className="text-xs font-mono font-bold uppercase text-zinc-500 mb-3">Exclusives</h4>
+                      <div className="flex flex-col gap-2.5">
+                        <label className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
                           <input
                             type="checkbox"
-                            checked={selectedCategories.includes(cat)}
-                            onChange={() => toggleCategory(cat)}
+                            checked={showOnlyOnSale}
+                            onChange={(e) => setShowOnlyOnSale(e.target.checked)}
                             className="rounded border-zinc-700 bg-zinc-900 text-purple-500 focus:ring-purple-500 h-4 w-4 cursor-pointer"
                           />
-                          <span>{cat}</span>
+                          <span className="text-amber-400">On Sale Only</span>
                         </label>
-                      ))}
+                        <label className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={showOnlyNew}
+                            onChange={(e) => setShowOnlyNew(e.target.checked)}
+                            className="rounded border-zinc-700 bg-zinc-900 text-purple-500 focus:ring-purple-500 h-4 w-4 cursor-pointer"
+                          />
+                          <span className="text-purple-400">New Only</span>
+                        </label>
+                        <label className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
+                          <input
+                            type="checkbox"
+                            checked={showOnlyWishlisted}
+                            onChange={(e) => setShowOnlyWishlisted(e.target.checked)}
+                            className="rounded border-zinc-700 bg-zinc-900 text-purple-500 focus:ring-purple-500 h-4 w-4 cursor-pointer"
+                          />
+                          <span className="text-rose-400">Wishlisted Items</span>
+                        </label>
+                      </div>
                     </div>
                   </div>
 
-                  {/* Price */}
-                  <div className="mb-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <h4 className="text-xs font-mono font-bold uppercase text-zinc-500">Max Budget</h4>
-                      <span className="font-mono text-xs font-semibold text-blue-400">${maxPrice}</span>
-                    </div>
-                    <input
-                      type="range"
-                      min="4"
-                      max="80"
-                      step="2"
-                      value={maxPrice}
-                      onChange={(e) => setMaxPrice(Number(e.target.value))}
-                      className="w-full accent-blue-400"
-                    />
-                  </div>
-
-                  {/* Badges */}
-                  <div className="mb-6">
-                    <h4 className="text-xs font-mono font-bold uppercase text-zinc-500 mb-3">Exclusives</h4>
-                    <div className="flex flex-col gap-2.5">
-                      <label className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={showOnlyOnSale}
-                          onChange={(e) => setShowOnlyOnSale(e.target.checked)}
-                          className="rounded border-zinc-700 bg-zinc-900 text-purple-500 focus:ring-purple-500 h-4 w-4 cursor-pointer"
-                        />
-                        <span className="text-amber-400">On Sale Only</span>
-                      </label>
-                      <label className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={showOnlyNew}
-                          onChange={(e) => setShowOnlyNew(e.target.checked)}
-                          className="rounded border-zinc-700 bg-zinc-900 text-purple-500 focus:ring-purple-500 h-4 w-4 cursor-pointer"
-                        />
-                        <span className="text-purple-400">New Only</span>
-                      </label>
-                      <label className="flex items-center gap-2.5 text-sm font-medium cursor-pointer">
-                        <input
-                          type="checkbox"
-                          checked={showOnlyWishlisted}
-                          onChange={(e) => setShowOnlyWishlisted(e.target.checked)}
-                          className="rounded border-zinc-700 bg-zinc-900 text-purple-500 focus:ring-purple-500 h-4 w-4 cursor-pointer"
-                        />
-                        <span className="text-rose-400">Wishlisted Items</span>
-                      </label>
-                    </div>
-                  </div>
-                </div>
-
-                <button
-                  onClick={() => setSidebarOpen(false)}
-                  className="w-full bg-linear-to-r from-blue-500 via-purple-500 to-rose-500 text-white font-semibold py-3 rounded-xl mt-4 cursor-pointer"
-                >
-                  Apply Filters
-                </button>
+                  <button
+                    onClick={() => setSidebarOpen(false)}
+                    className="w-full bg-linear-to-r from-blue-500 via-purple-500 to-rose-500 text-white font-semibold py-3 rounded-xl mt-4 cursor-pointer"
+                  >
+                    Apply Filters
+                  </button>
+                </motion.div>
               </div>
-            </div>
-          )}
+            )}
+          </AnimatePresence>
 
-          {/* CATALOG GRID - Main area */}
+          {/* CATALOG GRID */}
           <main className="flex-1" id="shop-catalog-main">
             {filteredProducts.length === 0 ? (
               <div
@@ -579,16 +585,30 @@ export const ShopView: React.FC<ShopViewProps> = ({
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 animate-fade-in" id="catalog-products-grid">
+              <motion.div
+                initial="hidden"
+                animate="visible"
+                variants={{
+                  hidden: { opacity: 0 },
+                  visible: { opacity: 1, transition: { staggerChildren: 0.05 } },
+                }}
+                className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6"
+                id="catalog-products-grid"
+              >
                 {filteredProducts.map((product) => {
                   const isInWishlist = wishlistIds.includes(product.id);
                   const isAdded = addedItems[product.id];
 
                   return (
-                    <div
+                    <motion.div
                       key={product.id}
+                      variants={{
+                        hidden: { opacity: 0, y: 20 },
+                        visible: { opacity: 1, y: 0 },
+                      }}
+                      whileHover={{ y: -6, transition: { duration: 0.2 } }}
                       onClick={() => handleProductClick(product)}
-                      className={`group rounded-2xl border p-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg cursor-pointer flex flex-col justify-between ${
+                      className={`group rounded-2xl border p-4 transition-all duration-300 hover:shadow-lg cursor-pointer flex flex-col justify-between ${
                         isDark ? "bg-ai-surface border-ai-border hover:border-zinc-700 hover:shadow-black/25" : "bg-white border-zinc-200 hover:border-zinc-300"
                       }`}
                       id={`product-card-${product.id}`}
@@ -617,7 +637,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             </span>
                           )}
 
-                          {/* Bestseller Rank badge if applicable */}
                           {product.rank && product.rank <= 3 && (
                             <span className="absolute top-3 left-3 bg-zinc-950/80 backdrop-blur-xs border border-zinc-800 text-white font-mono text-[10px] font-bold px-2 py-1 rounded-md flex items-center gap-0.5 z-10">
                               <span className="gemini-gradient-text font-black">#</span>
@@ -625,7 +644,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             </span>
                           )}
 
-                          {/* Sale/New Badge */}
                           {product.badge && (
                             <span className="absolute top-3 right-3 bg-amber-500 text-zinc-950 font-sans text-[10px] font-bold px-2 py-0.5 rounded-md uppercase tracking-wider shadow-sm">
                               {product.badge}
@@ -661,7 +679,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                         </div>
 
                         <div className="flex gap-1.5">
-                          {/* Wishlist */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -680,7 +697,6 @@ export const ShopView: React.FC<ShopViewProps> = ({
                             <Heart className="h-3.5 w-3.5" fill={isInWishlist ? "currentColor" : "none"} />
                           </button>
 
-                          {/* Quick Add Cart */}
                           <button
                             onClick={(e) => handleQuickAdd(product, e)}
                             className={`p-2 rounded-lg transition-all cursor-pointer ${
@@ -697,10 +713,10 @@ export const ShopView: React.FC<ShopViewProps> = ({
                           </button>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
                   );
                 })}
-              </div>
+              </motion.div>
             )}
           </main>
 

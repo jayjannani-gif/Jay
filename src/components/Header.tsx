@@ -9,6 +9,9 @@ interface HeaderProps {
   wishlistCount: number;
   theme: "dark" | "light";
   onThemeToggle: () => void;
+  devXp?: number;
+  onOpenRewards?: () => void;
+  onOpenAiStylist?: () => void;
 }
 
 export const Header: React.FC<HeaderProps> = ({
@@ -18,12 +21,16 @@ export const Header: React.FC<HeaderProps> = ({
   wishlistCount,
   theme,
   onThemeToggle,
+  devXp = 150,
+  onOpenRewards,
+  onOpenAiStylist,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const navItems = [
     { id: "home", label: "Home" },
-    { id: "shop", label: "Shop" },
+    { id: "shop", label: "Shop Catalog" },
+    { id: "studio", label: "Custom Studio ✨" },
     { id: "about", label: "Our Story" },
     { id: "contact", label: "Contact & FAQs" },
   ];
@@ -38,23 +45,26 @@ export const Header: React.FC<HeaderProps> = ({
   return (
     <>
       <header
-        className={`sticky top-0 z-40 w-full border-b transition-colors duration-300 glass-header ${
+        className={`sticky top-0 z-40 w-full transition-all duration-300 backdrop-blur-xl border-b ${
           isDark
-            ? "bg-ai-bg/85 border-ai-border text-ai-text"
-            : "bg-white/85 border-zinc-200 text-zinc-900"
+            ? "bg-[#06070B]/90 border-white/10 text-white shadow-xl shadow-black/60"
+            : "bg-white/90 border-zinc-200/90 text-zinc-900 shadow-sm"
         }`}
         id="app-header"
       >
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+        {/* Top Accent Line */}
+        <div className="h-[2px] w-full bg-blue-600" />
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between">
           
           {/* Logo Brand area */}
           <div
             onClick={() => handleNavClick("home")}
-            className="flex items-center gap-2.5 cursor-pointer group"
+            className="flex items-center gap-3 cursor-pointer group"
             id="header-brand-logo"
           >
-            <div className={`p-1.5 rounded-lg shadow-xs group-hover:scale-105 transition-transform flex items-center justify-center ${
-              isDark ? "bg-zinc-900 border border-zinc-800" : "bg-white border border-zinc-100"
+            <div className={`p-2 rounded-xl border shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center ${
+              isDark ? "bg-[#0F111A] border-white/15" : "bg-white border-zinc-200"
             }`}>
               <svg viewBox="0 0 24 24" className="h-5 w-5" xmlns="http://www.w3.org/2000/svg">
                 <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4" />
@@ -64,27 +74,30 @@ export const Header: React.FC<HeaderProps> = ({
               </svg>
             </div>
             <div className="flex flex-col">
-              <span className="font-heading font-bold text-base sm:text-lg tracking-tight leading-none">
-                Google <span className="text-red-600 font-extrabold">Merch Store</span>
+              <span className="font-display font-extrabold text-base sm:text-lg tracking-wider leading-none">
+                GOOGLE <span className="text-blue-500 font-extrabold">MERCH</span>
+              </span>
+              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 font-bold mt-0.5">
+                OFFICIAL STORE
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-1" id="header-desktop-nav">
+          <nav className={`hidden md:flex items-center gap-1 p-1 rounded-full border shadow-xs ${
+            isDark ? "bg-[#0C0E15]/90 border-white/10" : "bg-zinc-100/90 border-zinc-200"
+          }`} id="header-desktop-nav">
             {navItems.map((item) => {
               const isActive = currentPage === item.id;
               return (
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`relative px-4 py-2 text-sm font-medium transition-colors cursor-pointer rounded-lg hover:bg-zinc-500/5 ${
+                  className={`relative px-4 py-2 text-xs font-mono font-bold transition-all cursor-pointer rounded-full ${
                     isActive
-                      ? isDark
-                        ? "text-white"
-                        : "text-zinc-950 font-semibold"
+                      ? "text-white"
                       : isDark
-                      ? "text-zinc-400 hover:text-zinc-200"
+                      ? "text-zinc-400 hover:text-white"
                       : "text-zinc-600 hover:text-zinc-900"
                   }`}
                   id={`nav-item-${item.id}`}
@@ -93,8 +106,8 @@ export const Header: React.FC<HeaderProps> = ({
                   {isActive && (
                     <motion.div
                       layoutId="activeNavIndicator"
-                      className="absolute bottom-0 left-3 right-3 h-0.5 gemini-gradient-bg rounded-full"
-                      transition={{ type: "spring", stiffness: 380, damping: 30 }}
+                      className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-sm"
+                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
                     />
                   )}
                 </button>
@@ -102,33 +115,62 @@ export const Header: React.FC<HeaderProps> = ({
             })}
           </nav>
 
-          {/* Action Utilities (Cart, Wishlist, Theme, Mobile Hamburger) */}
-          <div className="flex items-center gap-1.5 sm:gap-3" id="header-actions">
+          {/* Action Utilities */}
+          <div className="flex items-center gap-2" id="header-actions">
             
+            {/* AI Stylist Button */}
+            {onOpenAiStylist && (
+              <button
+                onClick={onOpenAiStylist}
+                className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-mono font-extrabold text-white bg-blue-600 hover:bg-blue-500 transition-all active:scale-95 cursor-pointer shadow-sm"
+                id="ai-stylist-trigger-btn"
+              >
+                <Sparkles className="h-3.5 w-3.5" />
+                <span>AI STYLIST</span>
+              </button>
+            )}
+
+            {/* Dev XP Loyalty Badge */}
+            {onOpenRewards && (
+              <button
+                onClick={onOpenRewards}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-extrabold bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 transition-all cursor-pointer shadow-xs"
+                id="dev-xp-trigger-btn"
+                title="View Rewards & Perks"
+              >
+                <span className="text-amber-400">⚡</span>
+                <span>{devXp} XP</span>
+              </button>
+            )}
+
             {/* Theme Toggle */}
             <button
               onClick={onThemeToggle}
-              className={`p-2 rounded-lg transition-colors cursor-pointer ${
-                isDark ? "hover:bg-zinc-800 text-zinc-300" : "hover:bg-zinc-100 text-zinc-600"
+              className={`p-2.5 rounded-full border transition-all cursor-pointer ${
+                isDark
+                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-amber-400"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
               }`}
               aria-label="Toggle visual theme"
               id="theme-toggle-btn"
             >
-              {isDark ? <Sun className="h-5 w-5 text-amber-400" /> : <Moon className="h-5 w-5" />}
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
             </button>
 
             {/* Wishlist Icon */}
             <button
-              onClick={() => handleNavClick("shop")} // Wishlist triggers shop with 'wishlisted only' checked, or goes to a shop section
-              className={`p-2 rounded-lg transition-colors relative cursor-pointer ${
-                isDark ? "hover:bg-zinc-800 text-zinc-300" : "hover:bg-zinc-100 text-zinc-600"
+              onClick={() => handleNavClick("shop")}
+              className={`p-2.5 rounded-full border transition-all relative cursor-pointer ${
+                isDark
+                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-zinc-300"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
               }`}
               aria-label="View wishlist"
               id="wishlist-trigger"
             >
-              <Heart className="h-5 w-5" />
+              <Heart className="h-4 w-4" />
               {wishlistCount > 0 && (
-                <span className="absolute top-1 right-1 bg-rose-500 text-white text-[10px] font-mono font-bold w-4 h-4 flex items-center justify-center rounded-full animate-pulse">
+                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-mono font-extrabold w-4 h-4 flex items-center justify-center rounded-full animate-pulse shadow-md">
                   {wishlistCount}
                 </span>
               )}
@@ -137,15 +179,17 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Cart Icon */}
             <button
               onClick={() => handleNavClick("cart")}
-              className={`p-2 rounded-lg transition-colors relative cursor-pointer ${
-                isDark ? "hover:bg-zinc-800 text-zinc-300" : "hover:bg-zinc-100 text-zinc-600"
+              className={`p-2.5 rounded-full border transition-all relative cursor-pointer ${
+                isDark
+                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-zinc-300"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
               }`}
               aria-label="View shopping cart"
               id="cart-trigger"
             >
-              <ShoppingCart className="h-5 w-5" />
+              <ShoppingCart className="h-4 w-4" />
               {cartCount > 0 && (
-                <span className="absolute top-1 right-1 bg-blue-500 text-white text-[10px] font-mono font-bold w-4 h-4 flex items-center justify-center rounded-full">
+                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] font-mono font-extrabold w-4 h-4 flex items-center justify-center rounded-full shadow-md">
                   {cartCount}
                 </span>
               )}
@@ -154,48 +198,45 @@ export const Header: React.FC<HeaderProps> = ({
             {/* Mobile Drawer Toggle */}
             <button
               onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`p-2 rounded-lg md:hidden transition-colors cursor-pointer ${
-                isDark ? "hover:bg-zinc-800 text-zinc-300" : "hover:bg-zinc-100 text-zinc-600"
+              className={`p-2.5 rounded-full border md:hidden transition-all cursor-pointer ${
+                isDark
+                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-zinc-300"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
               }`}
               aria-label="Open menu"
               id="mobile-drawer-toggle"
             >
-              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
             </button>
           </div>
         </div>
       </header>
 
-      {/* Slide-In Mobile Navigation Drawer (< 760px) */}
+      {/* Slide-In Mobile Navigation Drawer */}
       <AnimatePresence>
         {mobileMenuOpen && (
-          <div className="fixed inset-0 z-30 md:hidden pointer-events-auto" id="mobile-drawer-wrapper">
-            {/* Backdrop */}
+          <div className="fixed inset-0 z-50 md:hidden pointer-events-auto" id="mobile-drawer-wrapper">
             <motion.div
               initial={{ opacity: 0 }}
-              animate={{ opacity: 0.6 }}
+              animate={{ opacity: 0.7 }}
               exit={{ opacity: 0 }}
               onClick={() => setMobileMenuOpen(false)}
-              className="absolute inset-0 bg-black"
+              className="absolute inset-0 bg-black/80 backdrop-blur-md"
             />
 
-            {/* Drawer Body */}
             <motion.div
               initial={{ x: "100%" }}
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className={`absolute right-0 top-0 bottom-0 w-72 max-w-[80vw] border-l shadow-2xl p-6 flex flex-col justify-between ${
-                isDark ? "bg-ai-surface border-ai-border text-ai-text" : "bg-white border-zinc-200 text-zinc-900"
+              transition={{ type: "spring", damping: 28, stiffness: 240 }}
+              className={`absolute right-0 top-0 bottom-0 w-80 border-l shadow-2xl p-6 flex flex-col justify-between ${
+                isDark ? "bg-[#090A0F] border-white/10 text-white" : "bg-white border-zinc-200 text-zinc-900"
               }`}
               id="mobile-drawer-body"
             >
-              <div className="mt-8">
-                <div className="flex items-center gap-2.5 pb-6 border-b border-zinc-800/10 dark:border-zinc-100/10 mb-6">
-                  <div className="p-1.5 rounded-lg bg-linear-to-r from-blue-500 via-purple-500 to-rose-500 text-white">
-                    <Sparkles className="h-4 w-4" />
-                  </div>
-                  <span className="font-heading font-bold text-lg">Google Store</span>
+              <div className="mt-6">
+                <div className="flex items-center gap-3 pb-6 border-b border-white/10 mb-6">
+                  <span className="font-display font-extrabold text-lg tracking-wider">GOOGLE MERCH</span>
                 </div>
 
                 <div className="flex flex-col gap-2">
@@ -205,30 +246,29 @@ export const Header: React.FC<HeaderProps> = ({
                       <button
                         key={item.id}
                         onClick={() => handleNavClick(item.id)}
-                        className={`w-full text-left py-3 px-4 rounded-xl text-base font-semibold transition-all flex items-center justify-between cursor-pointer ${
+                        className={`w-full text-left py-3.5 px-4 rounded-xl text-sm font-mono font-bold transition-all flex items-center justify-between cursor-pointer ${
                           isActive
-                            ? "bg-linear-to-r from-blue-500/10 via-purple-500/10 to-rose-500/10 text-blue-400 font-bold"
+                            ? "bg-blue-600/15 text-blue-400 border border-blue-500/30"
                             : isDark
-                            ? "text-zinc-300 hover:bg-zinc-800/50"
+                            ? "text-zinc-300 hover:bg-zinc-800/60"
                             : "text-zinc-700 hover:bg-zinc-100"
                         }`}
                         id={`mobile-nav-item-${item.id}`}
                       >
                         {item.label}
-                        {isActive && <div className="w-1.5 h-1.5 rounded-full gemini-gradient-bg" />}
+                        {isActive && <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />}
                       </button>
                     );
                   })}
                 </div>
               </div>
 
-              {/* Drawer footer info */}
-              <div className="border-t border-zinc-800/10 dark:border-zinc-100/10 pt-6">
-                <p className="text-xs font-mono text-zinc-500 dark:text-zinc-400 text-center">
-                  Smart Shopping Campaign active
+              <div className="border-t border-white/10 pt-6 space-y-2">
+                <p className="text-xs font-mono text-zinc-400 text-center">
+                  Official Google Merchandise Store
                 </p>
-                <p className="text-[10px] text-zinc-400 dark:text-zinc-500 text-center mt-1">
-                  United States & India Delivery
+                <p className="text-[10px] font-mono text-zinc-500 text-center">
+                  Global Express Delivery Active
                 </p>
               </div>
             </motion.div>

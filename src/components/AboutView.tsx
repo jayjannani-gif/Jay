@@ -1,5 +1,6 @@
 import React from "react";
 import { Sparkles, BarChart2, ShieldCheck, Heart, UserCheck, Flame } from "lucide-react";
+import { motion } from "motion/react";
 
 interface AboutViewProps {
   onPageChange: (page: string) => void;
@@ -14,7 +15,14 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Page title */}
-        <div className="text-center mb-16" id="about-header">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center mb-16"
+          id="about-header"
+        >
           <span className="text-xs font-mono font-bold text-purple-500 bg-purple-500/10 px-2.5 py-1 rounded-full uppercase tracking-wider">
             Our Brand Story
           </span>
@@ -25,10 +33,17 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
           <p className={`text-base sm:text-lg max-w-2xl mx-auto leading-relaxed ${isDark ? "text-ai-muted" : "text-zinc-600"}`}>
             Exploring how real shopper statistics and modern aesthetic principles converged to craft a more immersive, conversion-optimized Google Merch Store.
           </p>
-        </div>
+        </motion.div>
 
         {/* Narrative brand story */}
-        <section className="mb-16 flex flex-col gap-6" id="about-brand-story">
+        <motion.section
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-16 flex flex-col gap-6"
+          id="about-brand-story"
+        >
           <h2 className="text-2xl font-bold font-heading">The Origin Story</h2>
           <p className="text-sm sm:text-base leading-relaxed opacity-85">
             The standard brand merchandise experience has historically suffered from high homepage bounce rates, cluttered layout navigation, and a lack of immediate connection for the user. As developers flock to Google AI Studio for professional prototyping, we identified an opportunity to shift the merch store's visual design.
@@ -36,10 +51,14 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
           <p className="text-sm sm:text-base leading-relaxed opacity-85">
             By adapting a premium, deep-space visual language accented with energetic Gemini color flows, we designed an interface that feels like a natural extension of a developer's workspace. Every page is streamlined, and every design choice is verified using real click and hover logs to optimize for two massive developer corridors: the **United States** and **India**.
           </p>
-        </section>
+        </motion.section>
 
         {/* Quantitative Stat Strip */}
-        <section
+        <motion.section
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className={`grid grid-cols-2 md:grid-cols-4 gap-4 p-6 rounded-2xl border text-center mb-16 ${
             isDark ? "bg-ai-surface border-ai-border" : "bg-white border-zinc-200"
           }`}
@@ -61,16 +80,27 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
             <div className="text-2xl sm:text-3xl font-extrabold font-mono text-emerald-400">$128K+</div>
             <div className={`text-[10px] uppercase font-semibold mt-1 ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>Campaign Savings</div>
           </div>
-        </section>
+        </motion.section>
 
         {/* 3 Value Cards Grid */}
-        <section className="mb-16" id="about-value-cards">
+        <motion.section
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="mb-16"
+          id="about-value-cards"
+        >
           <h2 className="text-2xl font-bold font-heading text-center mb-10">Three Pillars of Redesign Architecture</h2>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Card 1 - Reduced Bounce */}
-            <div className={`p-6 rounded-2xl border flex flex-col justify-between ${isDark ? "bg-ai-surface border-ai-border" : "bg-white border-zinc-200"}`} id="value-card-bounce">
+            <motion.div
+              whileHover={{ y: -4 }}
+              className={`p-6 rounded-2xl border flex flex-col justify-between ${isDark ? "bg-ai-surface border-ai-border" : "bg-white border-zinc-200"}`}
+              id="value-card-bounce"
+            >
               <div>
                 <div className="p-2.5 rounded-lg bg-blue-500/10 text-blue-400 w-fit mb-4">
                   <BarChart2 className="h-5 w-5" />
@@ -81,10 +111,14 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
                 </p>
               </div>
               <span className="text-[10px] font-mono font-bold text-blue-400 block mt-4">Pillar 01 — Retention</span>
-            </div>
+            </motion.div>
 
             {/* Card 2 - Personalization */}
-            <div className={`p-6 rounded-2xl border flex flex-col justify-between ${isDark ? "bg-ai-surface border-ai-border" : "bg-white border-zinc-200"}`} id="value-card-personalization">
+            <motion.div
+              whileHover={{ y: -4 }}
+              className={`p-6 rounded-2xl border flex flex-col justify-between ${isDark ? "bg-ai-surface border-ai-border" : "bg-white border-zinc-200"}`}
+              id="value-card-personalization"
+            >
               <div>
                 <div className="p-2.5 rounded-lg bg-purple-500/10 text-purple-400 w-fit mb-4">
                   <UserCheck className="h-5 w-5" />
@@ -95,10 +129,14 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
                 </p>
               </div>
               <span className="text-[10px] font-mono font-bold text-purple-400 block mt-4">Pillar 02 — Personalization</span>
-            </div>
+            </motion.div>
 
             {/* Card 3 - Simplified Checkout */}
-            <div className={`p-6 rounded-2xl border flex flex-col justify-between ${isDark ? "bg-ai-surface border-ai-border" : "bg-white border-zinc-200"}`} id="value-card-checkout">
+            <motion.div
+              whileHover={{ y: -4 }}
+              className={`p-6 rounded-2xl border flex flex-col justify-between ${isDark ? "bg-ai-surface border-ai-border" : "bg-white border-zinc-200"}`}
+              id="value-card-checkout"
+            >
               <div>
                 <div className="p-2.5 rounded-lg bg-rose-500/10 text-rose-400 w-fit mb-4">
                   <ShieldCheck className="h-5 w-5" />
@@ -109,13 +147,17 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
                 </p>
               </div>
               <span className="text-[10px] font-mono font-bold text-rose-400 block mt-4">Pillar 03 — Checkout</span>
-            </div>
+            </motion.div>
 
           </div>
-        </section>
+        </motion.section>
 
         {/* Section on repeat customers & Smart Shopping Week */}
-        <section
+        <motion.section
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className={`p-8 rounded-2xl border relative overflow-hidden flex flex-col sm:flex-row sm:items-center justify-between gap-6 ${
             isDark ? "bg-linear-to-r from-zinc-950 to-ai-surface border-purple-500/20" : "bg-zinc-100 border-zinc-200"
           }`}
@@ -140,7 +182,7 @@ export const AboutView: React.FC<AboutViewProps> = ({ onPageChange, theme }) => 
           >
             Launch Shop Catalog
           </button>
-        </section>
+        </motion.section>
 
       </div>
     </div>

@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Mail, Clock, HelpCircle, ChevronRight, ChevronDown, CheckCircle2, MessageSquare } from "lucide-react";
 import { trackGenerateLead } from "../utils/analytics";
+import { motion } from "motion/react";
 
 interface ContactViewProps {
   theme: "dark" | "light";
@@ -71,7 +72,14 @@ export const ContactView: React.FC<ContactViewProps> = ({ theme }) => {
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         
         {/* Header Title */}
-        <div className="text-center max-w-xl mx-auto mb-16" id="contact-header">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+          className="text-center max-w-xl mx-auto mb-16"
+          id="contact-header"
+        >
           <span className="text-xs font-mono font-bold text-blue-500 bg-blue-500/10 px-2.5 py-1 rounded-full uppercase tracking-wider">
             Contact Support & Help Desk
           </span>
@@ -79,13 +87,20 @@ export const ContactView: React.FC<ContactViewProps> = ({ theme }) => {
           <p className={`text-sm ${isDark ? "text-ai-muted" : "text-zinc-500"}`}>
             Got questions about sizes, order delivery, or the Smart Shopping Week campaign? Reach our global team in Mountain View or Bengaluru.
           </p>
-        </div>
+        </motion.div>
 
         {/* Contact layout grid */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 mb-16" id="contact-layout-grid">
           
           {/* LEFT COLUMN: FAQ Accordions (lg:col-span-7) */}
-          <section className="lg:col-span-7" id="contact-faq-section">
+          <motion.section
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-7"
+            id="contact-faq-section"
+          >
             <div className="flex items-center gap-2 mb-6" id="faq-section-title">
               <HelpCircle className="h-5 w-5 text-purple-400" />
               <h2 className="text-xl sm:text-2xl font-bold font-heading">Frequently Asked Questions</h2>
@@ -125,10 +140,17 @@ export const ContactView: React.FC<ContactViewProps> = ({ theme }) => {
                 );
               })}
             </div>
-          </section>
+          </motion.section>
 
           {/* RIGHT COLUMN: Contact Support Form (lg:col-span-5) */}
-          <section className="lg:col-span-5" id="contact-form-section">
+          <motion.section
+            initial={{ opacity: 0, y: 24 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-40px" }}
+            transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+            className="lg:col-span-5"
+            id="contact-form-section"
+          >
             {isSubmitted ? (
               /* Success confirmation block */
               <div
@@ -235,12 +257,16 @@ export const ContactView: React.FC<ContactViewProps> = ({ theme }) => {
                 </form>
               </div>
             )}
-          </section>
+          </motion.section>
 
         </div>
 
         {/* Global support nodes (Hours and Locations) */}
-        <section
+        <motion.section
+          initial={{ opacity: 0, y: 24 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true, margin: "-40px" }}
+          transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
           className={`grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 p-6 sm:p-8 rounded-2xl border ${
             isDark ? "bg-ai-surface/40 border-ai-border text-zinc-300" : "bg-white border-zinc-200 text-zinc-700"
           }`}
@@ -282,7 +308,7 @@ export const ContactView: React.FC<ContactViewProps> = ({ theme }) => {
             </div>
           </div>
 
-        </section>
+        </motion.section>
 
       </div>
     </div>

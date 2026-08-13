@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Star, Heart, ShoppingCart, Minus, Plus, ChevronRight, ChevronDown, Check, ShieldCheck, HelpCircle } from "lucide-react";
+import { Star, Heart, ShoppingCart, Minus, Plus, ChevronRight, ChevronDown, Check, ShieldCheck } from "lucide-react";
 import { Product } from "../types";
 import { PRODUCTS } from "../data";
 import { trackViewItem, trackAddToCart, trackAddToWishlist } from "../utils/analytics";
@@ -32,6 +32,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   const [quantity, setQuantity] = useState<number>(1);
   const [activeSwatchIdx, setActiveSwatchIdx] = useState<number>(0);
   const [addedMessage, setAddedMessage] = useState(false);
+  const [rotationAngle, setRotationAngle] = useState<number>(0);
+  const [is360Mode, setIs360Mode] = useState<boolean>(false);
+  const [showSizeHelper, setShowSizeHelper] = useState<boolean>(false);
+  const [userHeight, setUserHeight] = useState<string>("178");
+  const [userWeight, setUserWeight] = useState<string>("72");
 
   // Accordion Toggles
   const [openSection, setOpenSection] = useState<"desc" | "shipping" | "materials" | null>("desc");
@@ -112,24 +117,68 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
             
             {/* Primary active view container */}
             <div
-              className="h-96 sm:h-[480px] rounded-2xl flex items-center justify-center relative overflow-hidden shadow-xl border border-zinc-800/10 dark:border-zinc-800"
+              className="h-96 sm:h-[480px] rounded-2xl flex items-center justify-center relative overflow-hidden shadow-xl border border-zinc-800/10 dark:border-zinc-800 group"
               style={{ background: swatches[activeSwatchIdx].style }}
               id="active-swatch-canvas"
             >
               {/* Backglow element */}
               <div className="absolute inset-0 bg-radial from-black/5 to-black/35 pointer-events-none z-10" />
+              
+              {/* 360 Inspection mode pill toggle */}
+              <div className="absolute top-4 left-4 z-20 flex items-center gap-2">
+                <button
+                  onClick={() => setIs360Mode(!is360Mode)}
+                  className={`px-3 py-1.5 rounded-full text-xs font-mono font-bold transition-all cursor-pointer shadow-md flex items-center gap-1.5 ${
+                    is360Mode
+                      ? "bg-purple-600 text-white ring-2 ring-purple-400"
+                      : "bg-black/60 text-white hover:bg-black/80 backdrop-blur-md"
+                  }`}
+                >
+                  <span>🔄 360° Inspector</span>
+                </button>
+              </div>
+
+              {/* Rotate controls if 360 mode is active */}
+              {is360Mode && (
+                <div className="absolute bottom-4 left-1/2 -translate-x-1/2 z-20 bg-black/75 backdrop-blur-md px-4 py-2 rounded-full border border-white/20 flex items-center gap-3 shadow-xl">
+                  <button
+                    onClick={() => setRotationAngle((prev) => (prev - 45 + 360) % 360)}
+                    className="text-white text-xs font-mono font-bold hover:text-purple-400 cursor-pointer"
+                  >
+                    ↺ 45°
+                  </button>
+                  <span className="text-xs font-mono font-semibold text-purple-400">{rotationAngle}°</span>
+                  <button
+                    onClick={() => setRotationAngle((prev) => (prev + 45) % 360)}
+                    className="text-white text-xs font-mono font-bold hover:text-purple-400 cursor-pointer"
+                  >
+                    45° ↻
+                  </button>
+                  <button
+                    onClick={() => setRotationAngle(0)}
+                    className="text-[10px] uppercase font-mono text-zinc-400 hover:text-white ml-2 border-l border-white/20 pl-2"
+                  >
+                    Reset
+                  </button>
+                </div>
+              )}
+
               {product.image ? (
                 <img
                   src={product.image}
                   alt={product.name}
-                  className="absolute inset-0 w-full h-full object-cover select-none"
+                  className="absolute inset-0 w-full h-full object-cover select-none transition-transform duration-300"
+                  style={{ transform: is360Mode ? `rotateY(${rotationAngle}deg) scale(0.95)` : "none" }}
                   referrerPolicy="no-referrer"
                   onError={(e) => {
                     (e.currentTarget as HTMLImageElement).style.display = "none";
                   }}
                 />
               ) : (
-                <span className="text-8xl sm:text-9xl filter drop-shadow-2xl select-none animate-bounce-slow">
+                <span
+                  className="text-8xl sm:text-9xl filter drop-shadow-2xl select-none transition-transform duration-300"
+                  style={{ transform: is360Mode ? `rotate(${rotationAngle}deg)` : "none" }}
+                >
                   {product.icon}
                 </span>
               )}
@@ -216,7 +265,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               </div>
 
               {/* Prices Section */}
-              <div className="flex items-baseline gap-3 mb-8" id="product-detail-price-box">
+              <div className="flex flex-wrap items-center gap-3 mb-6" id="product-detail-price-box">
                 <span className="font-mono text-2xl sm:text-3xl font-semibold text-blue-400">
                   ${product.price}
                 </span>
@@ -230,6 +279,9 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                     Save {Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
                   </span>
                 )}
+                <span className="text-xs font-mono font-bold text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-full flex items-center gap-1">
+                  <span>⚡</span> Earn +{Math.round(product.price * 10)} Dev XP
+                </span>
               </div>
 
               {/* Variant selection fields */}
@@ -238,8 +290,49 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 <div className="mb-6" id="product-detail-sizes-picker">
                   <div className="flex items-center justify-between mb-2">
                     <span className="text-xs font-mono font-bold uppercase text-zinc-400">Select Size</span>
-                    <span className="text-xs font-semibold text-purple-400 underline cursor-pointer">Size Chart</span>
+                    <button
+                      onClick={() => setShowSizeHelper(!showSizeHelper)}
+                      className="text-xs font-semibold text-purple-400 underline cursor-pointer flex items-center gap-1"
+                    >
+                      <span>📏 Fit Confidence Calculator</span>
+                    </button>
                   </div>
+
+                  {/* Size Fit Confidence Calculator Box */}
+                  {showSizeHelper && (
+                    <div className={`p-4 rounded-xl border mb-3 space-y-3 ${isDark ? "bg-zinc-900 border-purple-500/30" : "bg-purple-50 border-purple-200"}`}>
+                      <div className="flex items-center justify-between">
+                        <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">AI Fit Analyzer</span>
+                        <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 font-bold border border-emerald-500/20">
+                          94% Fit Confidence
+                        </span>
+                      </div>
+                      <div className="grid grid-cols-2 gap-2 text-xs">
+                        <div>
+                          <label className="text-[10px] text-zinc-400 block mb-1">Height (cm)</label>
+                          <input
+                            type="number"
+                            value={userHeight}
+                            onChange={(e) => setUserHeight(e.target.value)}
+                            className={`w-full px-2.5 py-1.5 rounded-lg border text-xs font-mono ${isDark ? "bg-zinc-950 border-zinc-800 text-white" : "bg-white border-zinc-300"}`}
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] text-zinc-400 block mb-1">Weight (kg)</label>
+                          <input
+                            type="number"
+                            value={userWeight}
+                            onChange={(e) => setUserWeight(e.target.value)}
+                            className={`w-full px-2.5 py-1.5 rounded-lg border text-xs font-mono ${isDark ? "bg-zinc-950 border-zinc-800 text-white" : "bg-white border-zinc-300"}`}
+                          />
+                        </div>
+                      </div>
+                      <p className="text-[11px] text-zinc-400">
+                        Based on {userHeight}cm / {userWeight}kg, size <strong className="text-purple-400">L</strong> will provide an ideal ergonomic relaxed fit.
+                      </p>
+                    </div>
+                  )}
+
                   <div className="flex flex-wrap gap-2">
                     {product.sizes.map((size) => {
                       const isSelected = selectedSize === size;
@@ -370,7 +463,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 {/* Buy Now (Direct to Checkout) */}
                 <button
                   onClick={handleBuyNowClick}
-                  className="w-full text-sm font-bold text-white bg-linear-to-r from-blue-500 via-purple-500 to-rose-500 hover:opacity-95 transition-opacity py-3.5 px-6 rounded-xl shadow-lg cursor-pointer"
+                  className="w-full text-sm font-bold text-white bg-blue-600 hover:bg-blue-500 transition-colors py-3.5 px-6 rounded-xl shadow-md cursor-pointer"
                   id="buy-now-btn"
                 >
                   Buy Now (Express Checkout)
