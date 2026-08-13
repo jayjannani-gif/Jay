@@ -47,7 +47,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       badge: "Sustainable Edition",
       price: "$68.00",
       originalPrice: "$88.00",
-      image: "/src/assets/images/sustainable_bundle_poster_1784181177171.jpg",
+      image: "/assets/images/sustainable_bundle_poster_1784181177171.jpg",
       buttonColor: "bg-emerald-600 hover:bg-emerald-500 border-emerald-600 focus:ring-emerald-500/50",
       actionText: "Claim Sustainable Combo",
       onClick: () => {
@@ -67,7 +67,7 @@ export const HomeView: React.FC<HomeViewProps> = ({
       badge: "Flash Deal Bundle",
       price: "$98.00",
       originalPrice: "$124.00",
-      image: "/src/assets/images/discount_bundle_poster_1784181190493.jpg",
+      image: "/assets/images/discount_bundle_poster_1784181190493.jpg",
       buttonColor: "bg-red-600 hover:bg-red-500 border-red-600 focus:ring-red-500/50",
       actionText: "Apply SHOPWEEK15 & Buy Bundle",
       onClick: () => {
