@@ -82,7 +82,7 @@ export const Footer: React.FC<FooterProps> = ({ onPageChange, theme, onShowToast
                 </svg>
               </div>
               <span className={`font-heading font-bold text-lg tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
-                Google <span className="gemini-gradient-text">Merch Store</span>
+                Google <span className="text-red-600 font-extrabold">Merch Store</span>
               </span>
             </div>
             <p className="text-xs leading-relaxed max-w-sm">
@@ -192,7 +192,7 @@ export const Footer: React.FC<FooterProps> = ({ onPageChange, theme, onShowToast
                   }
                   setEmailInput("");
                 }}
-                className="p-2 rounded-lg bg-linear-to-r from-blue-500 via-purple-500 to-rose-500 hover:opacity-95 text-white cursor-pointer"
+                className="p-2 rounded-lg bg-red-600 hover:bg-red-500 text-white cursor-pointer transition-colors duration-300"
                 aria-label="Subscribe"
               >
                 <Mail className="h-4 w-4" />

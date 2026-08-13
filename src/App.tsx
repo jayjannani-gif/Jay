@@ -254,6 +254,8 @@ export default function App() {
                   cartIds={cartItems.map((c) => c.productId)}
                   recentlyViewedIds={recentlyViewedIds}
                   theme={isDark ? "dark" : "light"}
+                  onApplyCoupon={handleApplyCoupon}
+                  couponCode={couponCode}
                 />
                 
                 {/* Embedded Interactive Discovery Quiz on Homepage to PERSONALISE experience immediately */}

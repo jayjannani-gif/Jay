@@ -65,7 +65,7 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div className="flex flex-col">
               <span className="font-heading font-bold text-base sm:text-lg tracking-tight leading-none">
-                Google <span className="gemini-gradient-text">Merch Store</span>
+                Google <span className="text-red-600 font-extrabold">Merch Store</span>
               </span>
             </div>
           </div>
