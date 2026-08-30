@@ -1,6 +1,6 @@
 {
-  "name": "",
-  "description": "",
+  "name": "Google Merchandise Store - GA4 Beyond the Border Redesign",
+  "description": "Redesigned Google Merchandise Store informed by GA4 analytics decisions, targeting Canada and UK expansion and optimizing Gravity Super G Bottle conversions.",
   "requestFramePermissions": [],
   "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
 }
