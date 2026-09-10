@@ -165,3 +165,92 @@ export const trackGenerateLead = (formName: string, email: string) => {
     user_email_hash: email ? "provided" : "not_provided",
   });
 };
+
+// --- Merch Lab Custom UX & Discovery Events ---
+
+export const trackQuickView = (product: Product) => {
+  trackEvent("quick_view", {
+    item_id: product.id,
+    item_name: product.name,
+    category: product.category,
+    price: product.price,
+    style: product.style,
+    ecosystem: product.ecosystem,
+  });
+};
+
+export const trackCompareProduct = (product: Product, action: "add" | "remove") => {
+  trackEvent("compare_product", {
+    action: action,
+    item_id: product.id,
+    item_name: product.name,
+    category: product.category,
+    price: product.price,
+  });
+};
+
+export const trackFindYourGoogleStart = () => {
+  trackEvent("find_your_google_start", {
+    entry_point: "homepage_wizard",
+  });
+};
+
+export const trackFindYourGoogleComplete = (prefs?: { purpose?: string; interests?: string[]; vibe?: string; budget?: string }) => {
+  if (!prefs) return;
+  trackEvent("find_your_google_complete", {
+    purpose: prefs.purpose || "",
+    interests_count: Array.isArray(prefs.interests) ? prefs.interests.length : 0,
+    vibe: prefs.vibe || "",
+    budget_tier: prefs.budget || "",
+  });
+};
+
+export const trackGiftLabStart = () => {
+  trackEvent("gift_lab_start", {
+    entry_point: "gift_lab_view",
+  });
+};
+
+export const trackGiftLabComplete = (prefs?: { recipient?: string; budget?: string; interests?: string[] }) => {
+  if (!prefs) return;
+  trackEvent("gift_lab_complete", {
+    recipient: prefs.recipient || "",
+    budget_tier: prefs.budget || "",
+    interests_count: Array.isArray(prefs.interests) ? prefs.interests.length : 0,
+  });
+};
+
+export const trackMoodSelected = (moodName: string) => {
+  trackEvent("mood_selected", {
+    mood: moodName,
+  });
+};
+
+export const trackEcosystemSelected = (ecosystemName: string) => {
+  trackEvent("ecosystem_selected", {
+    ecosystem: ecosystemName,
+  });
+};
+
+export const trackBundleSelected = (bundleId: string, bundleName: string, price: number) => {
+  trackEvent("bundle_selected", {
+    bundle_id: bundleId,
+    bundle_name: bundleName,
+    price: price,
+  });
+};
+
+export const trackRecommendationClicked = (product: Product, sectionName: string) => {
+  trackEvent("recommendation_clicked", {
+    item_id: product.id,
+    item_name: product.name,
+    section: sectionName,
+    price: product.price,
+  });
+};
+
+export const trackCurrencySwitched = (newCurrency: string) => {
+  trackEvent("currency_switched", {
+    currency: newCurrency,
+  });
+};

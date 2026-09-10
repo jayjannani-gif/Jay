@@ -1,8 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Star, Heart, ShoppingCart, Minus, Plus, ChevronRight, ChevronDown, Check, ShieldCheck } from "lucide-react";
-import { Product } from "../types";
+import { Star, Heart, ShoppingCart, Minus, Plus, ChevronRight, ChevronDown, Check, ShieldCheck, Scale } from "lucide-react";
+import { Product, CurrencyCode } from "../types";
 import { PRODUCTS } from "../data";
+import { formatPrice } from "../utils/currency";
 import { trackViewItem, trackAddToCart, trackAddToWishlist } from "../utils/analytics";
+import { CompleteTheLook } from "./CompleteTheLook";
 
 interface ProductDetailViewProps {
   productId: string;
@@ -11,6 +13,9 @@ interface ProductDetailViewProps {
   onAddToWishlist: (product: Product) => void;
   onBuyNow: (product: Product, size?: string, color?: string, quantity?: number) => void;
   wishlistIds: string[];
+  compareIds?: string[];
+  onToggleCompare?: (product: Product) => void;
+  currency?: CurrencyCode;
   theme: "dark" | "light";
 }
 
@@ -21,8 +26,12 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
   onAddToWishlist,
   onBuyNow,
   wishlistIds,
+  compareIds = [],
+  onToggleCompare,
+  currency = "USD",
   theme,
 }) => {
+  const activeCurrency: CurrencyCode = (currency as CurrencyCode) || "USD";
   // Find current product or fallback
   const product = PRODUCTS.find((p) => p.id === productId) || PRODUCTS[0];
 
@@ -267,11 +276,11 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
               {/* Prices Section */}
               <div className="flex flex-wrap items-center gap-3 mb-6" id="product-detail-price-box">
                 <span className="font-mono text-2xl sm:text-3xl font-semibold text-blue-400">
-                  ${product.price}
+                  {formatPrice(product.price, activeCurrency)}
                 </span>
                 {product.originalPrice && (
                   <span className={`font-mono text-base line-through ${isDark ? "text-zinc-500" : "text-zinc-400"}`}>
-                    ${product.originalPrice}
+                    {formatPrice(product.originalPrice, activeCurrency)}
                   </span>
                 )}
                 {product.originalPrice && (
@@ -458,6 +467,25 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                   >
                     <Heart className="h-5 w-5" fill={isInWishlist ? "currentColor" : "none"} />
                   </button>
+
+                  {/* Compare toggle */}
+                  {onToggleCompare && (
+                    <button
+                      onClick={() => onToggleCompare(product)}
+                      className={`p-3.5 rounded-xl border transition-colors cursor-pointer ${
+                        compareIds.includes(product.id)
+                          ? "bg-blue-500/20 border-blue-500/40 text-blue-400"
+                          : isDark
+                          ? "border-zinc-800 bg-zinc-900/60 hover:bg-zinc-800 text-zinc-400"
+                          : "border-zinc-200 bg-white hover:bg-zinc-100 text-zinc-600"
+                      }`}
+                      aria-label="Compare product"
+                      id="detail-compare-toggle-btn"
+                      title="Compare specs"
+                    >
+                      <Scale className="h-5 w-5" />
+                    </button>
+                  )}
                 </div>
 
                 {/* Buy Now (Direct to Checkout) */}
@@ -585,6 +613,17 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
           </div>
         </section>
 
+        {/* COMPLETE THE LOOK / FREQUENTLY PAIRED PRODUCTS */}
+        <section className="py-6" id="product-complete-the-look">
+          <CompleteTheLook
+            primaryProduct={product}
+            onAddToCart={onAddToCart}
+            onProductClick={(p) => onPageChange(`product&id=${p.id}`)}
+            currency={currency}
+            theme={theme}
+          />
+        </section>
+
         {/* AI-RECOMMENDED RELATED PRODUCTS */}
         <section className={`py-12 border-t ${isDark ? "border-ai-border/40" : "border-zinc-200"}`} id="product-related-row">
           <div className="flex items-center gap-2 mb-8" id="related-badge">
@@ -635,7 +674,7 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between gap-1 mt-3 pt-2 border-t border-zinc-800/10 dark:border-zinc-100/10">
-                  <span className="font-mono text-xs font-bold text-blue-400">${p.price}</span>
+                  <span className="font-mono text-xs font-bold text-blue-400">{formatPrice(p.price, activeCurrency)}</span>
                   <span className="text-[10px] font-mono text-emerald-400 font-semibold uppercase">Quick View →</span>
                 </div>
               </div>

@@ -154,6 +154,19 @@ export const CustomizerStudio: React.FC<CustomizerStudioProps> = ({
       shipping: "Customized & Hand-Printed in 48 hours with Express Delivery",
       sizes: currentItem.sizes,
       reviewsList: [],
+      tags: ["Custom", "Studio", "Personalized", currentItem.name],
+      audience: ["Developers", "Designers", "Custom Creators"],
+      useCases: ["Custom Gift", "Personalized Style", "Team Gear"],
+      ecosystem: "Google",
+      style: "Creative",
+      moods: ["creator-mode", "desk-day"],
+      complementaryProductIds: ["stickers-dev-pack", "dino-plush-desk"],
+      keyFeatures: [
+        "Unique custom print on demand",
+        "Selectable typographic style and emblems",
+        "High-density organic cotton feel"
+      ],
+      intendedUse: "Personalized Google Merch Lab custom creation tailored to your taste.",
     };
 
     const customDesignData = {

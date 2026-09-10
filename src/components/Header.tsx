@@ -1,12 +1,20 @@
 import React, { useState } from "react";
-import { ShoppingCart, Heart, Menu, X, Sun, Moon, Sparkles } from "lucide-react";
+import { ShoppingCart, Heart, Menu, X, Sun, Moon, Sparkles, Search, Scale, ChevronDown } from "lucide-react";
 import { motion, AnimatePresence } from "motion/react";
+import { CurrencyCode } from "../types";
+import { CURRENCIES } from "../utils/currency";
 
 interface HeaderProps {
   currentPage: string;
   onPageChange: (page: string) => void;
   cartCount: number;
   wishlistCount: number;
+  compareCount: number;
+  currency: CurrencyCode;
+  onCurrencyChange: (currency: CurrencyCode) => void;
+  onOpenSearch: () => void;
+  onOpenWishlist: () => void;
+  onOpenCompare: () => void;
   theme: "dark" | "light";
   onThemeToggle: () => void;
   devXp?: number;
@@ -19,6 +27,12 @@ export const Header: React.FC<HeaderProps> = ({
   onPageChange,
   cartCount,
   wishlistCount,
+  compareCount,
+  currency,
+  onCurrencyChange,
+  onOpenSearch,
+  onOpenWishlist,
+  onOpenCompare,
   theme,
   onThemeToggle,
   devXp = 150,
@@ -26,21 +40,51 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAiStylist,
 }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [currencyDropdownOpen, setCurrencyDropdownOpen] = useState(false);
 
   const navItems = [
     { id: "home", label: "Home" },
-    { id: "shop", label: "Shop Catalog" },
-    { id: "studio", label: "Custom Studio ✨" },
-    { id: "about", label: "Our Story" },
-    { id: "contact", label: "Contact & FAQs" },
+    { id: "shop", label: "Catalog" },
+    { id: "find", label: "Find Your Google" },
+    { id: "mood", label: "Merch Mood" },
+    { id: "gift", label: "Gift Lab" },
+    { id: "bundles", label: "Smart Bundles" },
+    { id: "studio", label: "Studio ✨" },
   ];
 
   const handleNavClick = (pageId: string) => {
-    onPageChange(pageId);
+    if (pageId === "find") {
+      onPageChange("home");
+      setTimeout(() => {
+        const el = document.getElementById("find-your-google-section");
+        el?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else if (pageId === "mood") {
+      onPageChange("home");
+      setTimeout(() => {
+        const el = document.getElementById("merch-mood-section");
+        el?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else if (pageId === "gift") {
+      onPageChange("home");
+      setTimeout(() => {
+        const el = document.getElementById("gift-lab-section");
+        el?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else if (pageId === "bundles") {
+      onPageChange("home");
+      setTimeout(() => {
+        const el = document.getElementById("smart-bundles-section");
+        el?.scrollIntoView({ behavior: "smooth" });
+      }, 100);
+    } else {
+      onPageChange(pageId);
+    }
     setMobileMenuOpen(false);
   };
 
   const isDark = theme === "dark";
+  const currentCurrencyConfig = CURRENCIES[currency] || CURRENCIES.USD;
 
   return (
     <>
@@ -48,19 +92,19 @@ export const Header: React.FC<HeaderProps> = ({
         className={`sticky top-0 z-40 w-full transition-all duration-300 backdrop-blur-xl border-b ${
           isDark
             ? "bg-[#06070B]/90 border-white/10 text-white shadow-xl shadow-black/60"
-            : "bg-white/90 border-zinc-200/90 text-zinc-900 shadow-sm"
+            : "bg-white/95 border-zinc-200 text-zinc-900 shadow-sm"
         }`}
         id="app-header"
       >
         {/* Top Accent Line */}
-        <div className="h-[2px] w-full bg-blue-600" />
+        <div className="h-[2px] w-full bg-gradient-to-r from-blue-500 via-emerald-500 to-amber-500" />
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-18 flex items-center justify-between gap-2">
           
-          {/* Logo Brand area */}
+          {/* Logo Brand Area: GOOGLE MERCH LAB */}
           <div
             onClick={() => handleNavClick("home")}
-            className="flex items-center gap-3 cursor-pointer group"
+            className="flex items-center gap-3 cursor-pointer group shrink-0"
             id="header-brand-logo"
           >
             <div className={`p-2 rounded-xl border shadow-sm group-hover:scale-105 transition-transform flex items-center justify-center ${
@@ -74,18 +118,18 @@ export const Header: React.FC<HeaderProps> = ({
               </svg>
             </div>
             <div className="flex flex-col">
-              <span className="font-display font-extrabold text-base sm:text-lg tracking-wider leading-none">
-                GOOGLE <span className="text-blue-500 font-extrabold">MERCH</span>
+              <span className="font-display font-black text-sm sm:text-base tracking-wider leading-none">
+                GOOGLE <span className="text-blue-500 font-black">MERCH LAB</span>
               </span>
-              <span className="text-[10px] font-mono uppercase tracking-widest text-zinc-400 font-bold mt-0.5">
-                OFFICIAL STORE
+              <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400 font-bold mt-0.5">
+                FIND YOUR GOOGLE
               </span>
             </div>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className={`hidden md:flex items-center gap-1 p-1 rounded-full border shadow-xs ${
-            isDark ? "bg-[#0C0E15]/90 border-white/10" : "bg-zinc-100/90 border-zinc-200"
+          <nav className={`hidden xl:flex items-center gap-1 p-1 rounded-full border shadow-xs ${
+            isDark ? "bg-[#0C0E15]/90 border-white/10" : "bg-zinc-100 border-zinc-200"
           }`} id="header-desktop-nav">
             {navItems.map((item) => {
               const isActive = currentPage === item.id;
@@ -93,9 +137,9 @@ export const Header: React.FC<HeaderProps> = ({
                 <button
                   key={item.id}
                   onClick={() => handleNavClick(item.id)}
-                  className={`relative px-4 py-2 text-xs font-mono font-bold transition-all cursor-pointer rounded-full ${
+                  className={`relative px-3.5 py-1.5 text-xs font-medium transition-all cursor-pointer rounded-full whitespace-nowrap ${
                     isActive
-                      ? "text-white"
+                      ? "text-white bg-blue-600 shadow-sm"
                       : isDark
                       ? "text-zinc-400 hover:text-white"
                       : "text-zinc-600 hover:text-zinc-900"
@@ -103,179 +147,199 @@ export const Header: React.FC<HeaderProps> = ({
                   id={`nav-item-${item.id}`}
                 >
                   {item.label}
-                  {isActive && (
-                    <motion.div
-                      layoutId="activeNavIndicator"
-                      className="absolute inset-0 bg-blue-600 rounded-full -z-10 shadow-sm"
-                      transition={{ type: "spring", stiffness: 400, damping: 30 }}
-                    />
-                  )}
                 </button>
               );
             })}
           </nav>
 
           {/* Action Utilities */}
-          <div className="flex items-center gap-2" id="header-actions">
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0" id="header-actions">
             
-            {/* AI Stylist Button */}
-            {onOpenAiStylist && (
+            {/* Currency Selector Dropdown */}
+            <div className="relative">
               <button
-                onClick={onOpenAiStylist}
-                className="hidden sm:flex items-center gap-1.5 px-3.5 py-2 rounded-full text-xs font-mono font-extrabold text-white bg-blue-600 hover:bg-blue-500 transition-all active:scale-95 cursor-pointer shadow-sm"
-                id="ai-stylist-trigger-btn"
+                onClick={() => setCurrencyDropdownOpen(!currencyDropdownOpen)}
+                className={`h-9 px-2.5 rounded-xl border text-xs font-semibold flex items-center gap-1.5 transition-colors ${
+                  isDark
+                    ? "bg-zinc-900/90 border-zinc-800 text-zinc-300 hover:text-white hover:border-zinc-700"
+                    : "bg-white border-zinc-200 text-zinc-700 hover:text-zinc-900 hover:border-zinc-300"
+                }`}
+                title="Switch Display Currency"
+                id="currency-selector-btn"
               >
-                <Sparkles className="h-3.5 w-3.5" />
-                <span>AI STYLIST</span>
+                <span>{currentCurrencyConfig.flag}</span>
+                <span className="hidden sm:inline font-mono">{currentCurrencyConfig.code}</span>
+                <span className="font-bold text-blue-400">{currentCurrencyConfig.symbol}</span>
+                <ChevronDown className="w-3 h-3 text-zinc-500" />
               </button>
-            )}
 
-            {/* Dev XP Loyalty Badge */}
-            {onOpenRewards && (
-              <button
-                onClick={onOpenRewards}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-mono font-extrabold bg-amber-500/10 border border-amber-500/30 text-amber-400 hover:bg-amber-500/20 transition-all cursor-pointer shadow-xs"
-                id="dev-xp-trigger-btn"
-                title="View Rewards & Perks"
-              >
-                <span className="text-amber-400">⚡</span>
-                <span>{devXp} XP</span>
-              </button>
-            )}
+              {currencyDropdownOpen && (
+                <div
+                  className={`absolute top-full mt-1.5 right-0 w-44 rounded-2xl border shadow-xl py-1.5 z-50 animate-fade-in ${
+                    isDark ? "bg-zinc-900 border-zinc-800 text-white" : "bg-white border-zinc-200 text-zinc-900"
+                  }`}
+                  id="currency-dropdown-menu"
+                >
+                  <div className="px-3 py-1 text-[10px] font-bold uppercase tracking-wider text-zinc-500 border-b border-zinc-800/40">
+                    Select Currency
+                  </div>
+                  {(Object.keys(CURRENCIES) as CurrencyCode[]).map((code) => {
+                    const c = CURRENCIES[code];
+                    const isSelected = currency === code;
+                    return (
+                      <button
+                        key={code}
+                        onClick={() => {
+                          onCurrencyChange(code);
+                          setCurrencyDropdownOpen(false);
+                        }}
+                        className={`w-full px-3 py-2 text-left text-xs font-medium flex items-center justify-between transition-colors ${
+                          isSelected
+                            ? isDark
+                              ? "bg-blue-600/20 text-blue-400 font-bold"
+                              : "bg-blue-50 text-blue-600 font-bold"
+                            : isDark
+                            ? "hover:bg-zinc-800 text-zinc-300"
+                            : "hover:bg-zinc-100 text-zinc-700"
+                        }`}
+                      >
+                        <div className="flex items-center gap-2">
+                          <span>{c.flag}</span>
+                          <span>{c.name}</span>
+                        </div>
+                        <span className="font-mono text-zinc-400">{c.symbol}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
 
-            {/* Theme Toggle */}
+            {/* Smart Search Trigger */}
             <button
-              onClick={onThemeToggle}
-              className={`p-2.5 rounded-full border transition-all cursor-pointer ${
+              onClick={onOpenSearch}
+              className={`p-2 rounded-xl border transition-all cursor-pointer ${
                 isDark
-                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-amber-400"
-                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
+                  ? "bg-zinc-900/90 border-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-blue-400"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700 hover:text-blue-600"
               }`}
-              aria-label="Toggle visual theme"
-              id="theme-toggle-btn"
+              aria-label="Smart Search"
+              title="Smart Search"
+              id="search-trigger-btn"
             >
-              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+              <Search className="h-4 w-4" />
             </button>
 
-            {/* Wishlist Icon */}
+            {/* Compare Drawer Trigger */}
             <button
-              onClick={() => handleNavClick("shop")}
-              className={`p-2.5 rounded-full border transition-all relative cursor-pointer ${
+              onClick={onOpenCompare}
+              className={`p-2 rounded-xl border transition-all relative cursor-pointer ${
                 isDark
-                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-zinc-300"
-                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
+                  ? "bg-zinc-900/90 border-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-blue-400"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700 hover:text-blue-600"
               }`}
-              aria-label="View wishlist"
-              id="wishlist-trigger"
+              aria-label="View comparison"
+              title="Product Comparison"
+              id="compare-trigger-btn"
+            >
+              <Scale className="h-4 w-4" />
+              {compareCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-md">
+                  {compareCount}
+                </span>
+              )}
+            </button>
+
+            {/* Wishlist Trigger */}
+            <button
+              onClick={onOpenWishlist}
+              className={`p-2 rounded-xl border transition-all relative cursor-pointer ${
+                isDark
+                  ? "bg-zinc-900/90 border-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-rose-400"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700 hover:text-rose-600"
+              }`}
+              aria-label="View saved shelf"
+              title="Saved Items"
+              id="wishlist-trigger-btn"
             >
               <Heart className="h-4 w-4" />
               {wishlistCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-mono font-extrabold w-4 h-4 flex items-center justify-center rounded-full animate-pulse shadow-md">
+                <span className="absolute -top-1 -right-1 bg-rose-500 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-md">
                   {wishlistCount}
                 </span>
               )}
             </button>
 
-            {/* Cart Icon */}
+            {/* Cart Trigger */}
             <button
               onClick={() => handleNavClick("cart")}
-              className={`p-2.5 rounded-full border transition-all relative cursor-pointer ${
+              className={`p-2 rounded-xl border transition-all relative cursor-pointer ${
                 isDark
-                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-zinc-300"
-                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
+                  ? "bg-zinc-900/90 border-zinc-800 hover:bg-zinc-800 text-zinc-300 hover:text-blue-400"
+                  : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700 hover:text-blue-600"
               }`}
-              aria-label="View shopping cart"
-              id="cart-trigger"
+              aria-label="View shopping bag"
+              title="Shopping Bag"
+              id="cart-trigger-btn"
             >
               <ShoppingCart className="h-4 w-4" />
               {cartCount > 0 && (
-                <span className="absolute -top-1 -right-1 bg-blue-500 text-white text-[10px] font-mono font-extrabold w-4 h-4 flex items-center justify-center rounded-full shadow-md">
+                <span className="absolute -top-1 -right-1 bg-blue-600 text-white text-[10px] font-bold w-4 h-4 flex items-center justify-center rounded-full shadow-md">
                   {cartCount}
                 </span>
               )}
             </button>
 
-            {/* Mobile Drawer Toggle */}
+            {/* Theme Toggle */}
             <button
-              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-              className={`p-2.5 rounded-full border md:hidden transition-all cursor-pointer ${
+              onClick={onThemeToggle}
+              className={`p-2 rounded-xl border transition-all cursor-pointer ${
                 isDark
-                  ? "bg-[#0F111A] border-white/10 hover:bg-zinc-800 text-zinc-300"
+                  ? "bg-zinc-900/90 border-zinc-800 hover:bg-zinc-800 text-amber-400"
                   : "bg-white border-zinc-200 hover:bg-zinc-100 text-zinc-700"
               }`}
-              aria-label="Open menu"
-              id="mobile-drawer-toggle"
+              aria-label="Toggle theme"
+              id="theme-toggle-btn"
             >
-              {mobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+              {isDark ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
+            </button>
+
+            {/* Mobile Hamburger */}
+            <button
+              onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+              className="p-2 rounded-xl border border-zinc-700 text-zinc-300 xl:hidden"
+              aria-label="Toggle mobile menu"
+            >
+              {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
             </button>
           </div>
         </div>
-      </header>
 
-      {/* Slide-In Mobile Navigation Drawer */}
-      <AnimatePresence>
+        {/* Mobile Navigation Drawer */}
         {mobileMenuOpen && (
-          <div className="fixed inset-0 z-50 md:hidden pointer-events-auto" id="mobile-drawer-wrapper">
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 0.7 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setMobileMenuOpen(false)}
-              className="absolute inset-0 bg-black/80 backdrop-blur-md"
-            />
-
-            <motion.div
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 28, stiffness: 240 }}
-              className={`absolute right-0 top-0 bottom-0 w-80 border-l shadow-2xl p-6 flex flex-col justify-between ${
-                isDark ? "bg-[#090A0F] border-white/10 text-white" : "bg-white border-zinc-200 text-zinc-900"
-              }`}
-              id="mobile-drawer-body"
-            >
-              <div className="mt-6">
-                <div className="flex items-center gap-3 pb-6 border-b border-white/10 mb-6">
-                  <span className="font-display font-extrabold text-lg tracking-wider">GOOGLE MERCH</span>
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  {navItems.map((item) => {
-                    const isActive = currentPage === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        onClick={() => handleNavClick(item.id)}
-                        className={`w-full text-left py-3.5 px-4 rounded-xl text-sm font-mono font-bold transition-all flex items-center justify-between cursor-pointer ${
-                          isActive
-                            ? "bg-blue-600/15 text-blue-400 border border-blue-500/30"
-                            : isDark
-                            ? "text-zinc-300 hover:bg-zinc-800/60"
-                            : "text-zinc-700 hover:bg-zinc-100"
-                        }`}
-                        id={`mobile-nav-item-${item.id}`}
-                      >
-                        {item.label}
-                        {isActive && <div className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />}
-                      </button>
-                    );
-                  })}
-                </div>
-              </div>
-
-              <div className="border-t border-white/10 pt-6 space-y-2">
-                <p className="text-xs font-mono text-zinc-400 text-center">
-                  Official Google Merchandise Store
-                </p>
-                <p className="text-[10px] font-mono text-zinc-500 text-center">
-                  Global Express Delivery Active
-                </p>
-              </div>
-            </motion.div>
+          <div
+            className={`xl:hidden border-t px-4 py-4 space-y-2 animate-fade-in ${
+              isDark ? "bg-zinc-950 border-zinc-800" : "bg-white border-zinc-200"
+            }`}
+          >
+            {navItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleNavClick(item.id)}
+                className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-semibold ${
+                  currentPage === item.id
+                    ? "bg-blue-600 text-white"
+                    : isDark
+                    ? "text-zinc-300 hover:bg-zinc-900"
+                    : "text-zinc-700 hover:bg-zinc-100"
+                }`}
+              >
+                {item.label}
+              </button>
+            ))}
           </div>
         )}
-      </AnimatePresence>
+      </header>
     </>
   );
 };
-export default Header;

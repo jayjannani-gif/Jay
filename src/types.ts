@@ -7,6 +7,28 @@ export interface Review {
   date: string;
 }
 
+export type EcosystemType =
+  | "Google"
+  | "Pixel"
+  | "Android"
+  | "YouTube"
+  | "Chrome"
+  | "Google Maps"
+  | "Google Cloud"
+  | "Developer"
+  | "Google Workspace";
+
+export type StyleType = "Minimal" | "Playful" | "Bold" | "Classic" | "Creative";
+
+export type MerchMoodType =
+  | "desk-day"
+  | "weekend"
+  | "creator-mode"
+  | "travel-mode"
+  | "cozy"
+  | "gift-mode"
+  | "google-fan";
+
 export interface Product {
   id: string;
   name: string;
@@ -27,6 +49,44 @@ export interface Product {
   sizes?: string[];
   colors?: { name: string; value: string }[];
   reviewsList: Review[];
+  // Merch Lab Discovery & Personalization Metadata
+  tags: string[];
+  audience: string[];
+  useCases: string[];
+  ecosystem: EcosystemType;
+  style: StyleType;
+  moods: string[];
+  complementaryProductIds: string[];
+  keyFeatures: string[];
+  intendedUse: string;
+}
+
+export type CurrencyCode = "USD" | "INR" | "CAD" | "GBP";
+
+export interface DiscoveryPreferences {
+  purpose: string; // "For Me" | "For Someone Else" | "Something New" | "Just Browsing"
+  interests: string[]; // "Tech" | "Design" | "Gaming" | "Google Culture" | "Productivity" | "Travel" | "Everyday Essentials"
+  vibe: string; // "Minimal" | "Playful" | "Bold" | "Classic" | "Creative"
+  budget: string; // "Under ₹1,000" | "₹1,000–₹2,500" | "₹2,500–₹5,000" | "₹5,000+"
+  timestamp?: number;
+}
+
+export interface GiftPreferences {
+  recipient: string; // "Friend" | "Partner" | "Parent" | "Colleague" | "Student" | "Google Fan" | "Myself"
+  budget: string; // "Under ₹1,000" | "₹1,000–₹2,500" | "₹2,500–₹5,000" | "₹5,000+"
+  interests: string[]; // "Tech" | "Travel" | "Gaming" | "Design" | "Productivity" | "Google" | "Lifestyle"
+  timestamp?: number;
+}
+
+export interface SmartBundle {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  productIds: string[];
+  discountPercent: number; // e.g. 15 for 15% off
+  theme: string;
+  badge?: string;
 }
 
 export interface CartItem {

@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { Trash2, ShoppingBag, ArrowRight, Minus, Plus, Tag, Gift, Percent, X } from "lucide-react";
-import { Product, CartItem } from "../types";
+import { Product, CartItem, CurrencyCode } from "../types";
 import { PRODUCTS } from "../data";
+import { formatPrice } from "../utils/currency";
 import { trackViewCart, trackRemoveFromCart, trackBeginCheckout } from "../utils/analytics";
 
 interface CartViewProps {
@@ -12,6 +13,7 @@ interface CartViewProps {
   couponCode: string;
   onApplyCoupon: (code: string) => void;
   onRemoveCoupon: () => void;
+  currency?: CurrencyCode;
   theme: "dark" | "light";
 }
 
@@ -23,8 +25,10 @@ export const CartView: React.FC<CartViewProps> = ({
   couponCode,
   onApplyCoupon,
   onRemoveCoupon,
+  currency = "USD",
   theme,
 }) => {
+  const activeCurrency: CurrencyCode = (currency as CurrencyCode) || "USD";
   const [couponInput, setCouponInput] = useState("");
   const [couponError, setCouponError] = useState("");
   const [couponSuccess, setCouponSuccess] = useState("");
@@ -227,7 +231,7 @@ export const CartView: React.FC<CartViewProps> = ({
                     {/* Total Price & Delete row */}
                     <div className="flex items-center gap-4 text-right">
                       <span className="font-mono text-sm sm:text-base font-bold text-blue-400 block min-w-[55px]">
-                        ${item.product.price * item.quantity}
+                        {formatPrice(item.product.price * item.quantity, activeCurrency)}
                       </span>
                       <button
                         onClick={() => handleRemoveFromCart(item)}
@@ -322,7 +326,7 @@ export const CartView: React.FC<CartViewProps> = ({
                 <div className="flex flex-col gap-3 text-xs mb-6">
                   <div className="flex items-center justify-between">
                     <span>Cart Subtotal</span>
-                    <span className="font-mono font-bold">${subtotal.toFixed(2)}</span>
+                    <span className="font-mono font-bold">{formatPrice(subtotal, activeCurrency)}</span>
                   </div>
 
                   {isPromoApplied && (
@@ -330,7 +334,7 @@ export const CartView: React.FC<CartViewProps> = ({
                       <span className="flex items-center gap-1">
                         <Percent className="h-3 w-3" /> Coupon (SHOPWEEK15 -15%)
                       </span>
-                      <span className="font-mono font-bold">-${discount.toFixed(2)}</span>
+                      <span className="font-mono font-bold">-{formatPrice(discount, activeCurrency)}</span>
                     </div>
                   )}
 
@@ -340,14 +344,14 @@ export const CartView: React.FC<CartViewProps> = ({
                       {shipping === 0 ? (
                         <span className="text-emerald-400 uppercase font-semibold">FREE</span>
                       ) : (
-                        `$${shipping.toFixed(2)}`
+                        formatPrice(shipping, activeCurrency)
                       )}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between">
                     <span>Estimated Tax (8%)</span>
-                    <span className="font-mono font-bold">${tax.toFixed(2)}</span>
+                    <span className="font-mono font-bold">{formatPrice(tax, activeCurrency)}</span>
                   </div>
                 </div>
 
@@ -355,7 +359,7 @@ export const CartView: React.FC<CartViewProps> = ({
                 <div className={`flex items-baseline justify-between border-t py-4 mb-6 ${isDark ? "border-zinc-800 text-white" : "border-zinc-100 text-zinc-900"}`}>
                   <span className="font-heading font-bold text-sm">Estimated Total</span>
                   <span className="font-mono text-xl sm:text-2xl font-extrabold text-blue-400" id="cart-estimated-total">
-                    ${total.toFixed(2)}
+                    {formatPrice(total, activeCurrency)}
                   </span>
                 </div>
 

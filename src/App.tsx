@@ -13,15 +13,19 @@ import { Quiz } from "./components/Quiz";
 import { CustomizerStudio } from "./components/CustomizerStudio";
 import { AiStylistDrawer } from "./components/AiStylistDrawer";
 import { LoyaltyRewardsModal } from "./components/LoyaltyRewardsModal";
+import { QuickViewModal } from "./components/QuickViewModal";
+import { CompareDrawer } from "./components/CompareDrawer";
+import { WishlistDrawer } from "./components/WishlistDrawer";
+import { SmartSearchModal } from "./components/SmartSearchModal";
 import { Toast, ToastMessage } from "./components/Toast";
-import { Product, CartItem, LoyaltyProfile } from "./types";
+import { Product, CartItem, LoyaltyProfile, CurrencyCode, DiscoveryPreferences } from "./types";
 import { motion, AnimatePresence } from "motion/react";
-import { Sparkles } from "lucide-react";
+import { Sparkles, Scale } from "lucide-react";
 
 export default function App() {
   // --- Persistent Shared States ---
   const [currentPage, setCurrentPage] = useState<string>("home");
-  
+
   const [cartItems, setCartItems] = useState<CartItem[]>(() => {
     const local = localStorage.getItem("google-store-cart");
     return local ? JSON.parse(local) : [];
@@ -32,14 +36,24 @@ export default function App() {
     return local ? JSON.parse(local) : [];
   });
 
+  const [compareIds, setCompareIds] = useState<string[]>(() => {
+    const local = localStorage.getItem("google-store-compare");
+    return local ? JSON.parse(local) : [];
+  });
+
+  const [currency, setCurrency] = useState<CurrencyCode>(() => {
+    const local = localStorage.getItem("google-store-currency");
+    return (local as CurrencyCode) || "USD";
+  });
+
   const [recentlyViewedIds, setRecentlyViewedIds] = useState<string[]>(() => {
     const local = localStorage.getItem("google-store-recently-viewed");
     return local ? JSON.parse(local) : [];
   });
 
-  const [theme, setTheme] = useState<"dark" | "light font-sans font-sans">(() => {
+  const [theme, setTheme] = useState<"dark" | "light">(() => {
     const local = localStorage.getItem("google-store-theme");
-    return (local as any) || "dark";
+    return local === "light" ? "light" : "dark";
   });
 
   const [couponCode, setCouponCode] = useState<string>(() => {
@@ -52,8 +66,18 @@ export default function App() {
     return local ? JSON.parse(local) : { xp: 175, unlockedCodes: ["DEVXP15"] };
   });
 
+  const [userPreferences, setUserPreferences] = useState<DiscoveryPreferences | undefined>(() => {
+    const local = localStorage.getItem("merch_lab_discovery_prefs");
+    return local ? JSON.parse(local) : undefined;
+  });
+
+  // Modal & Drawer visibility
   const [isAiStylistOpen, setIsAiStylistOpen] = useState(false);
   const [isRewardsOpen, setIsRewardsOpen] = useState(false);
+  const [isCompareOpen, setIsCompareOpen] = useState(false);
+  const [isWishlistOpen, setIsWishlistOpen] = useState(false);
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const [toasts, setToasts] = useState<ToastMessage[]>([]);
 
@@ -85,6 +109,14 @@ export default function App() {
   useEffect(() => {
     localStorage.setItem("google-store-wishlist", JSON.stringify(wishlistIds));
   }, [wishlistIds]);
+
+  useEffect(() => {
+    localStorage.setItem("google-store-compare", JSON.stringify(compareIds));
+  }, [compareIds]);
+
+  useEffect(() => {
+    localStorage.setItem("google-store-currency", currency);
+  }, [currency]);
 
   useEffect(() => {
     localStorage.setItem("google-store-theme", theme);
@@ -120,7 +152,7 @@ export default function App() {
   // --- Navigation Coordinator ---
   const changePage = (pageStr: string) => {
     setCurrentPage(pageStr);
-    
+
     const url = new URL(window.location.href);
     if (pageStr === "home") {
       url.searchParams.delete("page");
@@ -129,7 +161,7 @@ export default function App() {
       const id = pageStr.split("=")[1];
       url.searchParams.set("page", "product");
       url.searchParams.set("id", id);
-      
+
       // Log to recently viewed list
       setRecentlyViewedIds((prev) => {
         const next = [id, ...prev.filter((item) => item !== id)].slice(0, 8);
@@ -231,10 +263,38 @@ export default function App() {
     });
   };
 
+  const handleToggleCompare = (product: Product) => {
+    setCompareIds((prev) => {
+      if (prev.includes(product.id)) {
+        showToast(`Removed ${product.name} from comparison.`, "info");
+        return prev.filter((id) => id !== product.id);
+      } else {
+        if (prev.length >= 3) {
+          showToast("Comparison limit reached (max 3 items). Remove one first.", "error");
+          return prev;
+        }
+        showToast(`Added ${product.name} to comparison!`, "success");
+        return [...prev, product.id];
+      }
+    });
+  };
+
+  const handleRemoveFromCompare = (productOrId: Product | string) => {
+    const id = typeof productOrId === "string" ? productOrId : productOrId.id;
+    setCompareIds((prev) => prev.filter((item) => item !== id));
+  };
+
+  const handleClearCompare = () => {
+    setCompareIds([]);
+    showToast("Comparison cleared.", "info");
+  };
+
+  const handleQuickView = (product: Product) => {
+    setQuickViewProduct(product);
+  };
+
   const handleBuyNow = (product: Product, size?: string, color?: string, quantity = 1) => {
-    // Add to cart first
     handleAddToCart(product, size, color, quantity);
-    // Direct navigate to checkout
     changePage("checkout");
   };
 
@@ -253,19 +313,18 @@ export default function App() {
   };
 
   const handleThemeToggle = () => {
-    setTheme((prev) => (prev.startsWith("dark") ? "light" : "dark"));
-    showToast(`Switched theme to ${theme.startsWith("dark") ? "Light Mode" : "Obsidian Dark"}.`, "info");
+    setTheme((prev) => (prev === "dark" ? "light" : "dark"));
+    showToast(`Switched theme to ${theme === "dark" ? "Light Mode" : "Dark Mode"}.`, "info");
   };
 
-  // Extract ID if details page
   const detailProductId = currentPage.startsWith("product&id=") ? currentPage.split("=")[1] : "";
   const activeCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
-  const isDark = theme.startsWith("dark");
+  const isDark = theme === "dark";
 
   return (
     <div
       className={`min-h-screen flex flex-col font-sans selection:bg-blue-500/20 transition-colors duration-300 ${
-        isDark ? "bg-[#0A0B0E] text-[#F3F4F6] dark" : "bg-[#FAF9F6] text-[#0A0B0E]"
+        isDark ? "bg-[#06070B] text-zinc-100 dark" : "bg-[#FAF9F6] text-zinc-900"
       }`}
       id="app-root"
     >
@@ -276,12 +335,18 @@ export default function App() {
         onOpenStylist={() => setIsAiStylistOpen(true)}
       />
 
-      {/* Sticky Header Navigation */}
+      {/* Sticky Header Navigation with Merch Lab Integration */}
       <Header
         currentPage={currentPage.startsWith("product") ? "shop" : currentPage}
         onPageChange={changePage}
         cartCount={activeCartCount}
         wishlistCount={wishlistIds.length}
+        compareCount={compareIds.length}
+        currency={currency}
+        onCurrencyChange={setCurrency}
+        onOpenSearch={() => setIsSearchOpen(true)}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
+        onOpenCompare={() => setIsCompareOpen(true)}
         theme={isDark ? "dark" : "light"}
         onThemeToggle={handleThemeToggle}
         devXp={loyaltyProfile.xp}
@@ -312,23 +377,32 @@ export default function App() {
                     onPageChange={changePage}
                     onProductClick={(p) => changePage(`product&id=${p.id}`)}
                     onAddToCart={handleAddToCart}
-                    onAddToWishlist={handleAddToWishlist}
+                    onToggleWishlist={handleAddToWishlist}
+                    onToggleCompare={handleToggleCompare}
+                    onQuickView={handleQuickView}
                     wishlistIds={wishlistIds}
-                    cartIds={cartItems.map((c) => c.productId)}
+                    compareIds={compareIds}
                     recentlyViewedIds={recentlyViewedIds}
+                    currency={currency}
                     theme={isDark ? "dark" : "light"}
-                    onApplyCoupon={handleApplyCoupon}
-                    couponCode={couponCode}
+                    onShowToast={showToast}
+                    userPreferences={userPreferences}
+                    onPreferencesChanged={(prefs) => {
+                      setUserPreferences(prefs);
+                      localStorage.setItem("merch_lab_discovery_prefs", JSON.stringify(prefs));
+                    }}
                   />
                 </motion.div>
-                
-                {/* Embedded Interactive Discovery Quiz on Homepage with whileInView scroll-triggered animation */}
+
+                {/* Interactive Discovery Quiz with scroll-triggered whileInView reveal */}
                 <motion.section
                   initial={{ opacity: 0, y: 30 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true, margin: "-60px" }}
                   transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
-                  className={`py-16 border-t ${isDark ? "border-white/10 bg-[#07080B]" : "border-zinc-200 bg-white"}`}
+                  className={`py-16 border-t ${
+                    isDark ? "border-white/10 bg-[#07080B]" : "border-zinc-200 bg-white"
+                  }`}
                   id="home-discovery-quiz"
                 >
                   <div className="max-w-4xl mx-auto px-4 sm:px-6">
@@ -355,8 +429,12 @@ export default function App() {
                 <ShopView
                   onProductClick={(p) => changePage(`product&id=${p.id}`)}
                   onAddToCart={handleAddToCart}
-                  onAddToWishlist={handleAddToWishlist}
+                  onToggleWishlist={handleAddToWishlist}
+                  onToggleCompare={handleToggleCompare}
+                  onQuickView={handleQuickView}
                   wishlistIds={wishlistIds}
+                  compareIds={compareIds}
+                  currency={currency}
                   theme={isDark ? "dark" : "light"}
                 />
               </motion.section>
@@ -390,8 +468,11 @@ export default function App() {
                   onPageChange={changePage}
                   onAddToCart={handleAddToCart}
                   onAddToWishlist={handleAddToWishlist}
+                  onToggleCompare={handleToggleCompare}
                   onBuyNow={handleBuyNow}
                   wishlistIds={wishlistIds}
+                  compareIds={compareIds}
+                  currency={currency}
                   theme={isDark ? "dark" : "light"}
                 />
               </motion.section>
@@ -412,6 +493,7 @@ export default function App() {
                   couponCode={couponCode}
                   onApplyCoupon={handleApplyCoupon}
                   onRemoveCoupon={handleRemoveCoupon}
+                  currency={currency}
                   theme={isDark ? "dark" : "light"}
                 />
               </motion.section>
@@ -463,6 +545,70 @@ export default function App() {
       {/* Global Toast Alerts */}
       <Toast toasts={toasts} onRemove={removeToast} />
 
+      {/* Quick View Modal */}
+      <QuickViewModal
+        product={quickViewProduct}
+        isOpen={!!quickViewProduct}
+        onClose={() => setQuickViewProduct(null)}
+        onAddToCart={handleAddToCart}
+        onAddToWishlist={handleAddToWishlist}
+        onToggleCompare={handleToggleCompare}
+        onProductClick={(p) => {
+          setQuickViewProduct(null);
+          changePage(`product&id=${p.id}`);
+        }}
+        isWishlisted={quickViewProduct ? wishlistIds.includes(quickViewProduct.id) : false}
+        isCompared={quickViewProduct ? compareIds.includes(quickViewProduct.id) : false}
+        currency={currency}
+        theme={isDark ? "dark" : "light"}
+      />
+
+      {/* Compare Drawer */}
+      <CompareDrawer
+        isOpen={isCompareOpen}
+        onOpen={() => setIsCompareOpen(true)}
+        onClose={() => setIsCompareOpen(false)}
+        compareIds={compareIds}
+        onRemoveFromCompare={handleRemoveFromCompare}
+        onClearCompare={handleClearCompare}
+        onAddToCart={handleAddToCart}
+        onProductClick={(p) => {
+          setIsCompareOpen(false);
+          changePage(`product&id=${p.id}`);
+        }}
+        currency={currency}
+        theme={isDark ? "dark" : "light"}
+      />
+
+      {/* Wishlist Drawer */}
+      <WishlistDrawer
+        isOpen={isWishlistOpen}
+        onClose={() => setIsWishlistOpen(false)}
+        wishlistIds={wishlistIds}
+        onRemoveFromWishlist={handleAddToWishlist}
+        onClearWishlist={() => setWishlistIds([])}
+        onAddToCart={handleAddToCart}
+        onShowToast={showToast}
+        onProductClick={(p) => {
+          setIsWishlistOpen(false);
+          changePage(`product&id=${p.id}`);
+        }}
+        currency={currency}
+        theme={isDark ? "dark" : "light"}
+      />
+
+      {/* Smart Search Modal */}
+      <SmartSearchModal
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onProductClick={(p) => {
+          setIsSearchOpen(false);
+          changePage(`product&id=${p.id}`);
+        }}
+        currency={currency}
+        theme={isDark ? "dark" : "light"}
+      />
+
       {/* AI Stylist Slide Drawer */}
       <AiStylistDrawer
         isOpen={isAiStylistOpen}
@@ -482,18 +628,39 @@ export default function App() {
         theme={isDark ? "dark" : "light"}
       />
 
-      {/* Persistent Floating AI Stylist Action Button */}
+      {/* Floating Compare Launcher Pill (appears if items are selected for comparison) */}
+      {compareIds.length > 0 && (
+        <motion.div
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          exit={{ opacity: 0, y: 30 }}
+          className="fixed bottom-6 left-6 z-40"
+        >
+          <motion.button
+            whileHover={{ scale: 1.05, y: -2 }}
+            whileTap={{ scale: 0.95 }}
+            onClick={() => setIsCompareOpen(true)}
+            className="px-4 py-2.5 rounded-full text-white font-bold text-xs bg-zinc-900 border border-zinc-700 shadow-2xl flex items-center gap-2 cursor-pointer hover:border-blue-500/50"
+            id="floating-compare-pill"
+          >
+            <Scale className="h-4 w-4 text-blue-400" />
+            <span>Compare ({compareIds.length}/3)</span>
+          </motion.button>
+        </motion.div>
+      )}
+
+      {/* Persistent Floating AI Stylist Action Button with entrance animation sliding up from bottom */}
       <motion.div
-        initial={{ opacity: 0, y: 50 }}
+        initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.6, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
         className="fixed bottom-6 right-6 z-40"
       >
         <motion.button
           whileHover={{ scale: 1.08, y: -2 }}
           whileTap={{ scale: 0.95 }}
           onClick={() => setIsAiStylistOpen(true)}
-          className="px-5 py-3 rounded-full text-white font-bold text-xs bg-gradient-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 transition-all flex items-center gap-2.5 cursor-pointer border border-white/20"
+          className="px-5 py-3 rounded-full text-white font-bold text-xs bg-linear-to-r from-blue-600 via-indigo-600 to-purple-600 shadow-xl shadow-blue-500/25 hover:shadow-blue-500/40 transition-all flex items-center gap-2.5 cursor-pointer border border-white/20"
           id="floating-ai-stylist-btn"
         >
           <Sparkles className="h-4 w-4 text-cyan-300 animate-pulse" />
