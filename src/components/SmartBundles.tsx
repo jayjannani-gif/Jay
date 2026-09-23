@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Package, ShoppingBag, Check, Sparkles, ArrowRight, Tag } from "lucide-react";
 import { Product, CurrencyCode, SmartBundle } from "../types";
 import { SMART_BUNDLES, PRODUCTS } from "../data";
 import { formatPrice } from "../utils/currency";
-import { trackBundleSelected } from "../utils/analytics";
+import { trackBundleSelected, trackBundleView } from "../utils/analytics";
 
 interface SmartBundlesProps {
   currency: CurrencyCode;
@@ -22,6 +22,12 @@ export const SmartBundles: React.FC<SmartBundlesProps> = ({
 }) => {
   const [addedBundles, setAddedBundles] = useState<Record<string, boolean>>({});
   const isDark = theme === "dark";
+
+  useEffect(() => {
+    SMART_BUNDLES.forEach((b) => {
+      trackBundleView(b.id, b.name);
+    });
+  }, []);
 
   const handleAddBundle = (bundle: SmartBundle, bundleProducts: Product[], bundleTotal: number) => {
     bundleProducts.forEach((p) => {

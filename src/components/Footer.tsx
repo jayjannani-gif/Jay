@@ -141,6 +141,11 @@ export const Footer: React.FC<FooterProps> = ({ onPageChange, theme, onShowToast
                 </button>
               </li>
               <li>
+                <button onClick={() => onPageChange("city-spotlight")} className="hover:text-blue-400 transition-colors cursor-pointer text-blue-400 font-semibold flex items-center gap-1.5">
+                  <span>City Spotlight (Test Markets)</span>
+                </button>
+              </li>
+              <li>
                 <button onClick={() => onPageChange("shop")} className="hover:text-blue-400 transition-colors cursor-pointer">
                   Developer Fleeces & Apparel
                 </button>

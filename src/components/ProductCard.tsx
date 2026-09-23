@@ -119,17 +119,17 @@ export const ProductCard: React.FC<ProductCardProps> = ({
         </div>
 
         {/* Top Right Quick Action Buttons */}
-        <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10 opacity-90 group-hover:opacity-100 transition-opacity">
+        <div className="absolute top-3 right-3 flex flex-col gap-1.5 z-10 opacity-95 group-hover:opacity-100 transition-opacity">
           {/* Wishlist Button */}
           <button
             onClick={handleWishlist}
             aria-label={isWishlisted ? "Remove from wishlist" : "Add to wishlist"}
-            className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-sm ${
+            className={`w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-sm cursor-pointer ${
               isWishlisted
                 ? "bg-rose-500 text-white scale-105"
                 : isDark
-                ? "bg-zinc-900/80 text-zinc-300 hover:text-rose-400 hover:bg-zinc-800"
-                : "bg-white/90 text-zinc-600 hover:text-rose-500 hover:bg-white"
+                ? "bg-zinc-900/85 text-zinc-300 hover:text-rose-400 hover:bg-zinc-800"
+                : "bg-white/95 text-zinc-600 hover:text-rose-500 hover:bg-white"
             }`}
             id={`btn-wishlist-${product.id}`}
           >
@@ -140,10 +140,10 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={handleQuickView}
             aria-label="Quick View"
-            className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-sm ${
+            className={`w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-sm cursor-pointer ${
               isDark
-                ? "bg-zinc-900/80 text-zinc-300 hover:text-blue-400 hover:bg-zinc-800"
-                : "bg-white/90 text-zinc-600 hover:text-blue-600 hover:bg-white"
+                ? "bg-zinc-900/85 text-zinc-300 hover:text-blue-400 hover:bg-zinc-800"
+                : "bg-white/95 text-zinc-600 hover:text-blue-600 hover:bg-white"
             }`}
             title="Quick view"
             id={`btn-quickview-${product.id}`}
@@ -155,12 +155,12 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={handleCompare}
             aria-label={isCompared ? "Remove from comparison" : "Compare this product"}
-            className={`w-8 h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-sm ${
+            className={`w-9 h-9 sm:w-8 sm:h-8 rounded-full flex items-center justify-center backdrop-blur-md transition-all shadow-sm cursor-pointer ${
               isCompared
                 ? "bg-blue-600 text-white scale-105"
                 : isDark
-                ? "bg-zinc-900/80 text-zinc-300 hover:text-blue-400 hover:bg-zinc-800"
-                : "bg-white/90 text-zinc-600 hover:text-blue-600 hover:bg-white"
+                ? "bg-zinc-900/85 text-zinc-300 hover:text-blue-400 hover:bg-zinc-800"
+                : "bg-white/95 text-zinc-600 hover:text-blue-600 hover:bg-white"
             }`}
             title={isCompared ? "In comparison" : "Add to compare"}
             id={`btn-compare-${product.id}`}
@@ -229,7 +229,7 @@ export const ProductCard: React.FC<ProductCardProps> = ({
           <button
             onClick={handleAdd}
             disabled={justAdded}
-            className={`h-9 px-3.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all duration-200 shadow-sm ${
+            className={`h-10 sm:h-9 px-4 sm:px-3.5 rounded-xl font-medium text-xs flex items-center gap-1.5 transition-all duration-200 shadow-sm cursor-pointer ${
               justAdded
                 ? "bg-emerald-600 text-white cursor-default"
                 : isDark

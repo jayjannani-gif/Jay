@@ -45,6 +45,7 @@ export const Header: React.FC<HeaderProps> = ({
   const navItems = [
     { id: "home", label: "Home" },
     { id: "shop", label: "Catalog" },
+    { id: "city-spotlight", label: "City Spotlight 📍" },
     { id: "find", label: "Find Your Google" },
     { id: "mood", label: "Merch Mood" },
     { id: "gift", label: "Gift Lab" },
@@ -326,15 +327,18 @@ export const Header: React.FC<HeaderProps> = ({
               <button
                 key={item.id}
                 onClick={() => handleNavClick(item.id)}
-                className={`w-full text-left px-4 py-2.5 rounded-xl text-xs font-semibold ${
+                className={`w-full text-left px-4 py-3 min-h-[44px] rounded-xl text-xs font-semibold flex items-center justify-between cursor-pointer transition-colors ${
                   currentPage === item.id
-                    ? "bg-blue-600 text-white"
+                    ? "bg-blue-600 text-white shadow-sm"
                     : isDark
-                    ? "text-zinc-300 hover:bg-zinc-900"
-                    : "text-zinc-700 hover:bg-zinc-100"
+                    ? "text-zinc-300 hover:bg-zinc-900 active:bg-zinc-800"
+                    : "text-zinc-700 hover:bg-zinc-100 active:bg-zinc-200"
                 }`}
               >
-                {item.label}
+                <span>{item.label}</span>
+                {currentPage === item.id && (
+                  <span className="w-1.5 h-1.5 rounded-full bg-white" />
+                )}
               </button>
             ))}
           </div>

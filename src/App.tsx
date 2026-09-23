@@ -17,6 +17,8 @@ import { QuickViewModal } from "./components/QuickViewModal";
 import { CompareDrawer } from "./components/CompareDrawer";
 import { WishlistDrawer } from "./components/WishlistDrawer";
 import { SmartSearchModal } from "./components/SmartSearchModal";
+import { CitySpotlightView } from "./components/CitySpotlightView";
+import { MobileBottomBar } from "./components/MobileBottomBar";
 import { Toast, ToastMessage } from "./components/Toast";
 import { Product, CartItem, LoyaltyProfile, CurrencyCode, DiscoveryPreferences } from "./types";
 import { motion, AnimatePresence } from "motion/react";
@@ -318,6 +320,10 @@ export default function App() {
   };
 
   const detailProductId = currentPage.startsWith("product&id=") ? currentPage.split("=")[1] : "";
+  const isCitySpotlight = currentPage.startsWith("city-spotlight");
+  const selectedCityParam = currentPage.includes("city=")
+    ? currentPage.split("city=")[1].split("&")[0]
+    : "new-york";
   const activeCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const isDark = theme === "dark";
 
@@ -337,7 +343,7 @@ export default function App() {
 
       {/* Sticky Header Navigation with Merch Lab Integration */}
       <Header
-        currentPage={currentPage.startsWith("product") ? "shop" : currentPage}
+        currentPage={currentPage.startsWith("product") ? "shop" : isCitySpotlight ? "city-spotlight" : currentPage}
         onPageChange={changePage}
         cartCount={activeCartCount}
         wishlistCount={wishlistIds.length}
@@ -355,7 +361,7 @@ export default function App() {
       />
 
       {/* Main Content Area with Page Transitions */}
-      <main className="flex-grow">
+      <main className="flex-grow pb-16 md:pb-0">
         <AnimatePresence mode="wait">
           <motion.div
             key={currentPage + (detailProductId ? `-${detailProductId}` : "")}
@@ -435,6 +441,29 @@ export default function App() {
                   wishlistIds={wishlistIds}
                   compareIds={compareIds}
                   currency={currency}
+                  theme={isDark ? "dark" : "light"}
+                />
+              </motion.section>
+            )}
+
+            {isCitySpotlight && (
+              <motion.section
+                initial={{ opacity: 0, y: 24 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: "-50px" }}
+                transition={{ duration: 0.6, ease: [0.16, 1, 0.3, 1] }}
+              >
+                <CitySpotlightView
+                  initialCityId={selectedCityParam}
+                  currency={currency}
+                  wishlistIds={wishlistIds}
+                  compareIds={compareIds}
+                  onPageChange={changePage}
+                  onProductClick={(p) => changePage(`product&id=${p.id}`)}
+                  onAddToCart={handleAddToCart}
+                  onToggleWishlist={handleAddToWishlist}
+                  onToggleCompare={handleToggleCompare}
+                  onQuickView={handleQuickView}
                   theme={isDark ? "dark" : "light"}
                 />
               </motion.section>
@@ -634,7 +663,7 @@ export default function App() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: 30 }}
-          className="fixed bottom-6 left-6 z-40"
+          className="fixed bottom-20 md:bottom-6 left-4 md:left-6 z-40"
         >
           <motion.button
             whileHover={{ scale: 1.05, y: -2 }}
@@ -654,7 +683,7 @@ export default function App() {
         initial={{ opacity: 0, y: 60 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ duration: 0.6, delay: 0.25, ease: [0.16, 1, 0.3, 1] }}
-        className="fixed bottom-6 right-6 z-40"
+        className="fixed bottom-20 md:bottom-6 right-4 md:right-6 z-40"
       >
         <motion.button
           whileHover={{ scale: 1.08, y: -2 }}
@@ -667,6 +696,16 @@ export default function App() {
           <span>Ask AI Stylist</span>
         </motion.button>
       </motion.div>
+
+      {/* Mobile Bottom Navigation Bar for High-Converting Touch Access */}
+      <MobileBottomBar
+        currentPage={currentPage}
+        onPageChange={changePage}
+        cartCount={activeCartCount}
+        wishlistCount={wishlistIds.length}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
+        theme={isDark ? "dark" : "light"}
+      />
 
       {/* Footer Block */}
       <Footer onPageChange={changePage} theme={isDark ? "dark" : "light"} onShowToast={showToast} />

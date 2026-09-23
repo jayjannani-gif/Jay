@@ -3,7 +3,7 @@ import { Search, SlidersHorizontal, Heart, ShoppingCart, Star, X, Check, Grid, S
 import { Product, CurrencyCode, EcosystemType, MerchMoodType, StyleType } from "../types";
 import { PRODUCTS, GOOGLE_ECOSYSTEMS, MERCH_MOODS } from "../data";
 import { formatPrice } from "../utils/currency";
-import { trackViewItemList, trackSelectItem, trackSearch } from "../utils/analytics";
+import { trackViewItemList, trackSelectItem, trackSearch, trackFilterUsed } from "../utils/analytics";
 import { ProductCard } from "./ProductCard";
 
 interface ShopViewProps {
@@ -171,27 +171,35 @@ export const ShopView: React.FC<ShopViewProps> = ({
   }, [filteredProducts]);
 
   const toggleCategory = (cat: string) => {
-    setSelectedCategories((prev) =>
-      prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat]
-    );
+    setSelectedCategories((prev) => {
+      const next = prev.includes(cat) ? prev.filter((c) => c !== cat) : [...prev, cat];
+      trackFilterUsed("category", cat, next.length);
+      return next;
+    });
   };
 
   const toggleEcosystem = (eco: string) => {
-    setSelectedEcosystems((prev) =>
-      prev.includes(eco) ? prev.filter((e) => e !== eco) : [...prev, eco]
-    );
+    setSelectedEcosystems((prev) => {
+      const next = prev.includes(eco) ? prev.filter((e) => e !== eco) : [...prev, eco];
+      trackFilterUsed("ecosystem", eco, next.length);
+      return next;
+    });
   };
 
   const toggleMood = (mood: string) => {
-    setSelectedMoods((prev) =>
-      prev.includes(mood) ? prev.filter((m) => m !== mood) : [...prev, mood]
-    );
+    setSelectedMoods((prev) => {
+      const next = prev.includes(mood) ? prev.filter((m) => m !== mood) : [...prev, mood];
+      trackFilterUsed("mood", mood, next.length);
+      return next;
+    });
   };
 
   const toggleStyle = (st: string) => {
-    setSelectedStyles((prev) =>
-      prev.includes(st) ? prev.filter((s) => s !== st) : [...prev, st]
-    );
+    setSelectedStyles((prev) => {
+      const next = prev.includes(st) ? prev.filter((s) => s !== st) : [...prev, st];
+      trackFilterUsed("style", st, next.length);
+      return next;
+    });
   };
 
   const clearAllFilters = () => {

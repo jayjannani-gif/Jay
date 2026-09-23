@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Sparkles, Bot, X, ArrowRight, ShoppingCart, Check, Zap, RefreshCw, MessageSquare } from "lucide-react";
 import { Product } from "../types";
 import { PRODUCTS } from "../data";
+import { trackMerchStylistStart, trackMerchStylistRecommendation } from "../utils/analytics";
 import { motion, AnimatePresence } from "motion/react";
 
 interface AiStylistDrawerProps {
@@ -45,6 +46,12 @@ export const AiStylistDrawer: React.FC<AiStylistDrawerProps> = ({
     matchedProducts: { product: Product; matchScore: number; recommendationTag: string }[];
   } | null>(null);
 
+  useEffect(() => {
+    if (isOpen) {
+      trackMerchStylistStart("stylist_drawer");
+    }
+  }, [isOpen]);
+
   const handleGenerate = () => {
     setIsGenerating(true);
 
@@ -85,6 +92,7 @@ export const AiStylistDrawer: React.FC<AiStylistDrawerProps> = ({
         matchedProducts,
       });
 
+      trackMerchStylistRecommendation(matchedProducts.length, activePersonaObj.title);
       setIsGenerating(false);
     }, 600);
   };

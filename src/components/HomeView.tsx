@@ -12,6 +12,7 @@ import { CompleteTheLook } from "./CompleteTheLook";
 import { GiftLab } from "./GiftLab";
 import { SmartBundles } from "./SmartBundles";
 import { RecentlyViewed } from "./RecentlyViewed";
+import { CitySpotlightSection } from "./CitySpotlightSection";
 import { motion, useScroll, useTransform } from "motion/react";
 
 interface HomeViewProps {
@@ -290,6 +291,20 @@ export const HomeView: React.FC<HomeViewProps> = ({
           </div>
         </div>
       </section>
+
+      {/* 2.5 GOOGLE MERCH CITY SPOTLIGHT (Priority Test Markets) */}
+      <CitySpotlightSection
+        currency={currency}
+        wishlistIds={wishlistIds}
+        compareIds={compareIds}
+        onProductClick={onProductClick}
+        onAddToCart={onAddToCart}
+        onToggleWishlist={onToggleWishlist}
+        onToggleCompare={onToggleCompare}
+        onQuickView={onQuickView}
+        onNavigateToCity={(cityId) => onPageChange(`city-spotlight&city=${cityId}`)}
+        theme={theme}
+      />
 
       {/* 3. FIND YOUR GOOGLE INTERACTIVE DISCOVERY SYSTEM */}
       <FindYourGoogle

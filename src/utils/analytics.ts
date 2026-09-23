@@ -254,3 +254,73 @@ export const trackCurrencySwitched = (newCurrency: string) => {
     currency: newCurrency,
   });
 };
+
+// --- Google Merch City Spotlight GA4 Events ---
+
+export const trackCitySpotlightView = (city: string, testMarketId?: string) => {
+  trackEvent("city_spotlight_view", {
+    city: city,
+    test_market_id: testMarketId || "",
+    market_tier: "Priority Test Market",
+  });
+};
+
+export const trackCitySelected = (city: string, previousCity?: string, source?: string) => {
+  trackEvent("city_selected", {
+    city: city,
+    previous_city: previousCity || "",
+    source: source || "city_selector",
+  });
+};
+
+export const trackCityCollectionView = (city: string, itemCount: number, categories: string[]) => {
+  trackEvent("city_collection_view", {
+    city: city,
+    item_count: itemCount,
+    categories: categories.join(", "),
+  });
+};
+
+export const trackCityProductInteraction = (
+  action: "click" | "add_to_cart" | "add_to_wishlist" | "quick_view",
+  product: Product,
+  city: string
+) => {
+  trackEvent(`city_product_${action}`, {
+    city: city,
+    product_id: product.id,
+    product_name: product.name,
+    category: product.category,
+    price: product.price,
+  });
+};
+
+// --- Catalog Filters & Stylist Discovery Events ---
+
+export const trackFilterUsed = (filterType: string, filterValue: string, activeCount: number) => {
+  trackEvent("filter_used", {
+    filter_type: filterType,
+    filter_value: filterValue,
+    active_filters_count: activeCount,
+  });
+};
+
+export const trackBundleView = (bundleId: string, bundleName: string) => {
+  trackEvent("bundle_view", {
+    bundle_id: bundleId,
+    bundle_name: bundleName,
+  });
+};
+
+export const trackMerchStylistStart = (entryPoint = "floating_button") => {
+  trackEvent("merch_stylist_start", {
+    entry_point: entryPoint,
+  });
+};
+
+export const trackMerchStylistRecommendation = (itemsCount: number, persona?: string) => {
+  trackEvent("merch_stylist_recommendation", {
+    items_count: itemsCount,
+    persona: persona || "",
+  });
+};
