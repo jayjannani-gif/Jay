@@ -120,10 +120,10 @@ export const Header: React.FC<HeaderProps> = ({
             </div>
             <div className="flex flex-col">
               <span className="font-display font-black text-sm sm:text-base tracking-wider leading-none">
-                GOOGLE <span className="text-blue-500 font-black">MERCH LAB</span>
+                GOOGLE <span className="text-blue-500 font-black">MERCH STUDIO</span>
               </span>
               <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-400 font-bold mt-0.5">
-                FIND YOUR GOOGLE
+                DISCOVER. SHOP. FIND YOUR GOOGLE.
               </span>
             </div>
           </div>

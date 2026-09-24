@@ -683,6 +683,52 @@ export const ProductDetailView: React.FC<ProductDetailViewProps> = ({
         </section>
 
       </div>
+
+      {/* Sticky Mobile Purchase Bar for 71.18% Mobile Traffic Conversion */}
+      <div
+        className={`fixed bottom-16 left-0 right-0 z-30 md:hidden p-3 border-t backdrop-blur-xl transition-all shadow-xl flex items-center justify-between gap-3 ${
+          isDark
+            ? "bg-[#090A0D]/95 border-zinc-800 text-white"
+            : "bg-white/95 border-zinc-200 text-zinc-900"
+        }`}
+        id="mobile-sticky-pdp-bar"
+      >
+        <div className="flex flex-col shrink-0">
+          <span className="text-[10px] text-zinc-500 font-medium">Price</span>
+          <span className="font-extrabold text-base text-blue-500">
+            {formatPrice(product.price, activeCurrency)}
+          </span>
+        </div>
+
+        <div className="flex items-center gap-2 flex-1 justify-end">
+          <button
+            onClick={() => onAddToWishlist(product)}
+            className={`p-2.5 rounded-xl border transition-colors shrink-0 ${
+              wishlistIds.includes(product.id)
+                ? "bg-rose-500/10 border-rose-500/30 text-rose-500"
+                : isDark
+                ? "bg-zinc-900 border-zinc-800 text-zinc-400"
+                : "bg-zinc-100 border-zinc-300 text-zinc-600"
+            }`}
+            aria-label="Wishlist"
+          >
+            <Heart
+              className={`w-4 h-4 ${
+                wishlistIds.includes(product.id) ? "fill-rose-500" : ""
+              }`}
+            />
+          </button>
+
+          <button
+            onClick={handleAddToCartClick}
+            className="flex-1 max-w-[200px] h-11 px-4 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-1.5 shadow-md shadow-blue-500/25 active:scale-95 transition-all"
+            id="mobile-sticky-add-to-bag"
+          >
+            <ShoppingCart className="w-4 h-4" />
+            <span>{addedMessage ? "Added to Bag!" : "Add to Bag"}</span>
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

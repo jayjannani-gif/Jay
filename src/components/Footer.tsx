@@ -110,13 +110,18 @@ export const Footer: React.FC<FooterProps> = ({ onPageChange, theme, onShowToast
                   <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
                 </svg>
               </div>
-              <span className={`font-display font-extrabold text-lg tracking-wider ${isDark ? "text-white" : "text-zinc-900"}`}>
-                GOOGLE <span className="text-blue-500">MERCH</span>
-              </span>
+              <div className="flex flex-col">
+                <span className={`font-display font-extrabold text-base tracking-wider ${isDark ? "text-white" : "text-zinc-900"}`}>
+                  GOOGLE <span className="text-blue-500">MERCH STUDIO</span>
+                </span>
+                <span className="text-[9px] font-mono uppercase tracking-widest text-zinc-500 font-bold">
+                  Discover. Shop. Find Your Google.
+                </span>
+              </div>
             </div>
 
             <p className="text-xs leading-relaxed max-w-xs text-zinc-400">
-              High-performance developer gear, licensed apparel, drinkware, and custom print tools engineered for creators worldwide.
+              Discover official Google apparel, hardware accessories, developer desk essentials, and City Spotlight test market collections.
             </p>
 
             <div className="flex gap-2 pt-2">
@@ -229,7 +234,7 @@ export const Footer: React.FC<FooterProps> = ({ onPageChange, theme, onShowToast
         <div className={`border-t mt-12 pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-mono ${
           isDark ? "border-white/10 text-zinc-500" : "border-zinc-200 text-zinc-500"
         }`}>
-          <p>© {new Date().getFullYear()} Google Merch Store. All Rights Reserved.</p>
+          <p>© {new Date().getFullYear()} Google Merch Studio. Discover. Shop. Find Your Google.</p>
           <div className="flex gap-4">
             <span className="hover:text-blue-400 cursor-pointer">Privacy Policy</span>
             <span className="hover:text-blue-400 cursor-pointer">Terms of Service</span>

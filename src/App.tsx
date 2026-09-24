@@ -324,6 +324,16 @@ export default function App() {
   const selectedCityParam = currentPage.includes("city=")
     ? currentPage.split("city=")[1].split("&")[0]
     : "new-york";
+  const isShop = currentPage.startsWith("shop");
+  const initialShopCategory = currentPage.includes("category=")
+    ? decodeURIComponent(currentPage.split("category=")[1].split("&")[0])
+    : undefined;
+  const initialShopSort = currentPage.includes("sort=")
+    ? (currentPage.split("sort=")[1].split("&")[0] as any)
+    : undefined;
+  const initialShopFilter = currentPage.includes("filter=")
+    ? (currentPage.split("filter=")[1].split("&")[0] as any)
+    : undefined;
   const activeCartCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
   const isDark = theme === "dark";
 
@@ -343,7 +353,7 @@ export default function App() {
 
       {/* Sticky Header Navigation with Merch Lab Integration */}
       <Header
-        currentPage={currentPage.startsWith("product") ? "shop" : isCitySpotlight ? "city-spotlight" : currentPage}
+        currentPage={currentPage.startsWith("product") || isShop ? "shop" : isCitySpotlight ? "city-spotlight" : currentPage}
         onPageChange={changePage}
         cartCount={activeCartCount}
         wishlistCount={wishlistIds.length}
@@ -425,7 +435,7 @@ export default function App() {
               </>
             )}
 
-            {currentPage === "shop" && (
+            {isShop && (
               <motion.section
                 initial={{ opacity: 0, y: 24 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -442,6 +452,9 @@ export default function App() {
                   compareIds={compareIds}
                   currency={currency}
                   theme={isDark ? "dark" : "light"}
+                  initialCategory={initialShopCategory}
+                  initialSort={initialShopSort}
+                  initialFilter={initialShopFilter}
                 />
               </motion.section>
             )}
@@ -699,7 +712,7 @@ export default function App() {
 
       {/* Mobile Bottom Navigation Bar for High-Converting Touch Access */}
       <MobileBottomBar
-        currentPage={currentPage}
+        currentPage={currentPage.startsWith("product") || isShop ? "shop" : isCitySpotlight ? "city-spotlight" : currentPage}
         onPageChange={changePage}
         cartCount={activeCartCount}
         wishlistCount={wishlistIds.length}

@@ -16,6 +16,9 @@ interface ShopViewProps {
   compareIds: string[];
   currency: CurrencyCode;
   theme: "dark" | "light";
+  initialCategory?: string;
+  initialSort?: SortOption;
+  initialFilter?: "sale" | "new" | "bestselling";
 }
 
 type SortOption = "featured" | "bestselling" | "price_low" | "price_high" | "top_rated";
@@ -30,19 +33,49 @@ export const ShopView: React.FC<ShopViewProps> = ({
   compareIds,
   currency,
   theme,
+  initialCategory,
+  initialSort,
+  initialFilter,
 }) => {
   // Filters State
   const [searchQuery, setSearchQuery] = useState("");
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([]);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(
+    initialCategory ? [initialCategory] : []
+  );
   const [selectedEcosystems, setSelectedEcosystems] = useState<string[]>([]);
   const [selectedMoods, setSelectedMoods] = useState<string[]>([]);
   const [selectedStyles, setSelectedStyles] = useState<string[]>([]);
   const [maxPrice, setMaxPrice] = useState<number>(100);
-  const [showOnlyOnSale, setShowOnlyOnSale] = useState(false);
-  const [showOnlyNew, setShowOnlyNew] = useState(false);
+  const [showOnlyOnSale, setShowOnlyOnSale] = useState(initialFilter === "sale");
+  const [showOnlyNew, setShowOnlyNew] = useState(initialFilter === "new");
   const [showOnlyWishlisted, setShowOnlyWishlisted] = useState(false);
   const [minRating, setMinRating] = useState<number>(0);
-  const [sortBy, setSortBy] = useState<SortOption>("featured");
+  const [sortBy, setSortBy] = useState<SortOption>(
+    initialSort || (initialFilter === "bestselling" ? "bestselling" : "featured")
+  );
+
+  // Sync if initial props change
+  useEffect(() => {
+    if (initialCategory) {
+      setSelectedCategories([initialCategory]);
+    }
+  }, [initialCategory]);
+
+  useEffect(() => {
+    if (initialSort) {
+      setSortBy(initialSort);
+    }
+  }, [initialSort]);
+
+  useEffect(() => {
+    if (initialFilter === "sale") {
+      setShowOnlyOnSale(true);
+    } else if (initialFilter === "new") {
+      setShowOnlyNew(true);
+    } else if (initialFilter === "bestselling") {
+      setSortBy("bestselling");
+    }
+  }, [initialFilter]);
 
   const [sidebarOpen, setSidebarOpen] = useState(false);
 

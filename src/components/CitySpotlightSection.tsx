@@ -63,16 +63,15 @@ export const CitySpotlightSection: React.FC<CitySpotlightSectionProps> = ({
           <div>
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-semibold uppercase tracking-wider mb-2.5 border bg-blue-500/10 text-blue-400 border-blue-500/20">
               <MapPin className="w-3.5 h-3.5 text-blue-400" />
-              <span>Google Merch City Spotlight • Priority Test Markets</span>
+              <span>City Spotlight • Test Markets</span>
             </div>
             
-            <h2 className={`text-2xl sm:text-3xl font-extrabold tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
-              Explore Merch Curated for Your City
+            <h2 className={`text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight ${isDark ? "text-white" : "text-zinc-900"}`}>
+              Your Google. <span className="bg-clip-text text-transparent bg-gradient-to-r from-blue-400 via-indigo-400 to-purple-400">Your City.</span>
             </h2>
             
             <p className="mt-2 text-xs sm:text-sm text-zinc-400 max-w-2xl leading-relaxed">
-              Based on GA4 audience concentration, we're testing city-specific merchandising across key tech hubs.
-              Discover collections tailored to transit, campus rituals, and workspace culture.
+              Explore Google merch through a city-specific lens. Based on GA4 audience concentration, we're testing curated merchandise arrangements across New York, Mountain View, and Sunnyvale.
             </p>
           </div>
 
@@ -86,7 +85,7 @@ export const CitySpotlightSection: React.FC<CitySpotlightSectionProps> = ({
             }`}
             id="btn-explore-full-city-spotlight"
           >
-            <span>Explore {activeCity.name} Collection</span>
+            <span>Explore {activeCity.name} Spotlight</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
